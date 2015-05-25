@@ -1,0 +1,422 @@
+/*
+  $aa=json_decode('[
+    {
+        "lat": 26,
+        "long": 88
+    },
+    {
+        "lat": 20,
+        "long": 86
+    },
+    {
+        "lat": 8,
+        "long": 71
+    },
+    {
+        "lat": 14,
+        "long": 72
+    },
+    {
+        "lat": 26,
+        "long": 68
+    },
+    {
+        "lat": 27,
+        "long": 96
+    },
+    {
+        "lat": 21,
+        "long": 71
+    },
+    {
+        "lat": 21,
+        "long": 94
+    },
+    {
+        "lat": 27,
+        "long": 81
+    },
+    {
+        "lat": 31,
+        "long": 85
+    },
+    {
+        "lat": 35,
+        "long": 70
+    },
+    {
+        "lat": 32,
+        "long": 81
+    },
+    {
+        "lat": 6,
+        "long": 91
+    },
+    {
+        "lat": 17,
+        "long": 69
+    },
+    {
+        "lat": 22,
+        "long": 73
+    },
+    {
+        "lat": 13,
+        "long": 83
+    },
+    {
+        "lat": 32,
+        "long": 75
+    },
+    {
+        "lat": 23,
+        "long": 83
+    },
+    {
+        "lat": 22,
+        "long": 74
+    },
+    {
+        "lat": 19,
+        "long": 92
+    },
+    {
+        "lat": 8,
+        "long": 87
+    },
+    {
+        "lat": 22,
+        "long": 76
+    },
+    {
+        "lat": 31,
+        "long": 75
+    },
+    {
+        "lat": 29,
+        "long": 82
+    },
+    {
+        "lat": 9,
+        "long": 93
+    },
+    {
+        "lat": 26,
+        "long": 81
+    },
+    {
+        "lat": 19,
+        "long": 72
+    },
+    {
+        "lat": 9,
+        "long": 72
+    },
+    {
+        "lat": 20,
+        "long": 74
+    },
+    {
+        "lat": 30,
+        "long": 74
+    },
+    {
+        "lat": 26,
+        "long": 81
+    },
+    {
+        "lat": 26,
+        "long": 75
+    },
+    {
+        "lat": 23,
+        "long": 89
+    },
+    {
+        "lat": 9,
+        "long": 89
+    },
+    {
+        "lat": 14,
+        "long": 77
+    },
+    {
+        "lat": 29,
+        "long": 70
+    },
+    {
+        "lat": 9,
+        "long": 73
+    },
+    {
+        "lat": 9,
+        "long": 90
+    },
+    {
+        "lat": 12,
+        "long": 70
+    },
+    {
+        "lat": 30,
+        "long": 95
+    },
+    {
+        "lat": 21,
+        "long": 94
+    },
+    {
+        "lat": 14,
+        "long": 97
+    },
+    {
+        "lat": 14,
+        "long": 76
+    },
+    {
+        "lat": 32,
+        "long": 70
+    },
+    {
+        "lat": 6,
+        "long": 97
+    },
+    {
+        "lat": 31,
+        "long": 85
+    },
+    {
+        "lat": 20,
+        "long": 89
+    },
+    {
+        "lat": 20,
+        "long": 74
+    },
+    {
+        "lat": 21,
+        "long": 88
+    },
+    {
+        "lat": 24,
+        "long": 72
+    },
+    {
+        "lat": 22,
+        "long": 76
+    },
+    {
+        "lat": 35,
+        "long": 78
+    },
+    {
+        "lat": 37,
+        "long": 82
+    },
+    {
+        "lat": 9,
+        "long": 73
+    },
+    {
+        "lat": 16,
+        "long": 73
+    },
+    {
+        "lat": 34,
+        "long": 96
+    },
+    {
+        "lat": 16,
+        "long": 83
+    },
+    {
+        "lat": 37,
+        "long": 84
+    },
+    {
+        "lat": 20,
+        "long": 82
+    },
+    {
+        "lat": 25,
+        "long": 80
+    },
+    {
+        "lat": 9,
+        "long": 96
+    },
+    {
+        "lat": 12,
+        "long": 86
+    },
+    {
+        "lat": 18,
+        "long": 78
+    },
+    {
+        "lat": 17,
+        "long": 71
+    },
+    {
+        "lat": 20,
+        "long": 68
+    },
+    {
+        "lat": 25,
+        "long": 86
+    },
+    {
+        "lat": 23,
+        "long": 89
+    },
+    {
+        "lat": 36,
+        "long": 84
+    },
+    {
+        "lat": 30,
+        "long": 77
+    },
+    {
+        "lat": 24,
+        "long": 88
+    },
+    {
+        "lat": 10,
+        "long": 76
+    },
+    {
+        "lat": 32,
+        "long": 90
+    },
+    {
+        "lat": 30,
+        "long": 86
+    },
+    {
+        "lat": 37,
+        "long": 80
+    },
+    {
+        "lat": 14,
+        "long": 89
+    },
+    {
+        "lat": 13,
+        "long": 72
+    },
+    {
+        "lat": 26,
+        "long": 81
+    },
+    {
+        "lat": 35,
+        "long": 84
+    },
+    {
+        "lat": 31,
+        "long": 75
+    },
+    {
+        "lat": 8,
+        "long": 83
+    },
+    {
+        "lat": 14,
+        "long": 76
+    },
+    {
+        "lat": 7,
+        "long": 95
+    },
+    {
+        "lat": 30,
+        "long": 86
+    },
+    {
+        "lat": 10,
+        "long": 92
+    },
+    {
+        "lat": 20,
+        "long": 70
+    },
+    {
+        "lat": 18,
+        "long": 82
+    },
+    {
+        "lat": 9,
+        "long": 92
+    },
+    {
+        "lat": 33,
+        "long": 86
+    },
+    {
+        "lat": 25,
+        "long": 90
+    },
+    {
+        "lat": 13,
+        "long": 78
+    },
+    {
+        "lat": 25,
+        "long": 69
+    },
+    {
+        "lat": 24,
+        "long": 95
+    },
+    {
+        "lat": 35,
+        "long": 90
+    },
+    {
+        "lat": 20,
+        "long": 74
+    },
+    {
+        "lat": 18,
+        "long": 73
+    },
+    {
+        "lat": 22,
+        "long": 78
+    },
+    {
+        "lat": 37,
+        "long": 81
+    },
+    {
+        "lat": 17,
+        "long": 73
+    },
+    {
+        "lat": 24,
+        "long": 70
+    },
+    {
+        "lat": 22,
+        "long": 86
+    }
+]',true);
+ 
+      $ss='select ID from wp4_users';
+   $qq= $wpdb->get_results($ss);
+   str_getcsv($csv);
+   $ii=0;
+    foreach ($qq as  $vv) {
+      $rand1= rand(63,1);
+      $rand2=rand(-63,-1);
+          
+        echo "delete from wp4_usermeta where meta_key='perma_lat' and user_id=".$vv->ID.";";
+       
+echo "INSERT INTO `wp4`.`wp4_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES (NULL, '".$vv->ID."', 'perma_lat', '".$aa[$ii]['lat']."');";
+         
+        echo "delete from wp4_usermeta where meta_key='perma_long' and user_id=".$vv->ID.";";
+   
+   echo "INSERT INTO `wp4`.`wp4_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES (NULL, '".$vv->ID."', 'perma_long', '".$aa[$ii]['long']."');";
+ $ii++;
+    }
+die; */ 
