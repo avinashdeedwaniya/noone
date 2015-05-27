@@ -77,14 +77,13 @@ function sgetval(id,value) {
             jQuery( ".state" ).keyup(function() {
                 var this_div=jQuery(this);
                 var sid=jQuery(this).val();
-                var ajaxurl="<?php echo admin_url( 'admin-ajax.php' ); ?>"; 
-                var data ={ action: "state_action",  state:sid    };
+                var ajaxurl=nooneobject.nooneajaxurl; 
+                var data ={ action: "state_action_front",  state:sid    };
                 jQuery.post(ajaxurl, data, function (response){
                     this_div.siblings(".skey").html(response);
                 });
             });
-            jQuery("#TB_overlay").hide();
-			jQuery(".TB_window").hide();
+            
 			var map_height = jQuery( window ).height();
 			jQuery("#mapnew").css("height",(map_height-20));
 			setTimeout(function(){ equalizer() }, 3000);

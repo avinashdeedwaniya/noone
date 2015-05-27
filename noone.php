@@ -1078,6 +1078,26 @@ add_action( 'wp_ajax_state_action', 'state_action' );
             echo '</ul>' ;  
             die();
             }
+add_action( 'wp_ajax_nopriv_state_action_front', 'state_action_front' );
+add_action( 'wp_ajax_state_action_front', 'state_action_front' );
+
+   function state_action_front() {     
+            global $wpdb;
+            $state=strtolower($_REQUEST['state']);
+            
+            $result = $wpdb->get_results("select * from ".$wpdb->prefix . "states_list where LOWER(state_name) like '%".$state."%'" );   
+            $data = "";
+            echo '<div class="list-group" id="state_list_ul">';
+            $i=0;
+            foreach($result as $dis)
+            {
+                $i++;
+              echo ' <a class="list-group-item" onclick="sgetval(this.id,\''.$dis->state_name.'\')" id="d'.$i.'" >'.$dis->state_name.'</a> ';
+            }
+            echo '</div>' ;  
+            die();
+            }
+             
 function add_br($str){
     return (trim($str)!='')? $str.'<br />':'';
 }
