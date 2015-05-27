@@ -18,13 +18,13 @@
 	<script src="<?php echo get_template_directory_uri(); ?>/js/html5.js"></script>
 	<![endif]-->
 	  <?php add_action('wp_print_styles', 'remove_all_theme_styles_no_map', 100);
-
+add_action( 'wp_head', 'itr_global_js_vars' );
 wp_head();?>
 </head>
 
 <body <?php body_class(); ?>>
 <?php
-noone_searching();
+noone_grid_searching();
 ?>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-function noone_searching()
+function noone_grid_searching()
 {
     global $wpdb;
     require_once('paging.class.php');
@@ -168,7 +168,7 @@ function noone_searching()
 (mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ORDER BY display_name ASC ";
     $t_record        = $wpdb->get_results($TSQL);
     $total_records   = count($t_record);
-    $record_per_page = 4;
+    $record_per_page = 16;
     $paged = ( get_query_var( 'page' ) ) ? absint( get_query_var( 'page' ) ) : 1;
     $paging->assign(get_permalink().'?search_name='.$_REQUEST['search_name'].'&search_city='.$_REQUEST['search_city'].'&search_state='.$_REQUEST['search_state'].'&search_sector='.$_REQUEST['search_sector'].'&search_occp_type='.$_REQUEST['search_occp_type'].'&search_occp_city='.$_REQUEST['search_occp_city'].'&search_occp_state='.$_REQUEST['search_occp_state'].'&search_btn='.$_REQUEST['search_btn'].'&dir-search='.$_REQUEST['dir-search'].'', $total_records, $record_per_page,$paged);
     $sql_limit = $paging->sql_limit();
@@ -181,139 +181,78 @@ function noone_searching()
  
    <div data-interactive="yes" class="map-search no-map" id="directory-search">
 					<div class="wrapper">
-						<form class="dir-searchform"  method="get" action="<?php echo get_permalink();?>"
-						 id="dir-search-form" 
-						 >
-						      <input type="hidden" name="user_lat" value="<?php echo $_REQUEST['user_lat'];?>" id="user_lat">
-                              <input type="hidden" id="user_long" value="<?php echo $_REQUEST['user_long'];?>" name="user_long">
-							
-                            <div class="clearfix">
-							<div id="dir-search-inputs" >
-                                <p class="searchbox-title">Search By Person</p>
-								<div id="dir-holder">
-									<div class="dir-holder-wrap">
-										<input type="text" name="search_name" placeholder="Full Name" 
-										id="search_name"  class="dir-searchinput" value="<?php echo $_REQUEST['search_name'];?>" />
-									 
+						<div class="dir-searchform well" id="dir-search-form">
+							<form class="form-horizontal"  method="get" action="<?php echo get_permalink();?>"
+							  >
+								  <input type="hidden" name="user_lat" value="<?php echo $_REQUEST['user_lat'];?>" id="user_lat">
+								  <input type="hidden" id="user_long" value="<?php echo $_REQUEST['user_long'];?>" name="user_long">
+								
+								<div class="clearfix">
+								<div id="dir-search-inputs" >
+									<p class="searchbox-title">Search By Person</p>
+									<div id="dir-holder">
+										<div class="dir-holder-wrap">
+											<input type="text" name="search_name" placeholder="Full Name" 
+											id="search_name"  class="dir-searchinput form-control" value="<?php echo $_REQUEST['search_name'];?>" />
+										 
 
-									 <input type="text" placeholder="City" id="search_city" 
-									class="ui-autocomplete-input"   name="search_city" value="<?php
-    echo $_REQUEST['search_city'];
-?>" />
-									<input type="text" class="ui-autocomplete-input state" placeholder="State" autocomplete="off" id="search_state" name="search_state" value="<?php
-    echo $_REQUEST['search_state'];
-?>" /> <div class="skey"></div>
-                            <div id="dir-search-button" class="hidden-xs">
-                             
-                                <input type="submit" class="dir-searchsubmit" value="Search" name="search_btn" id="dir-searchsubmit">
-                            </div>
+										 <input type="text" placeholder="City" id="search_city" 
+										class="ui-autocomplete-input form-control"   name="search_city" value="<?php
+		echo $_REQUEST['search_city'];
+	?>" />
+										<input type="text" class="ui-autocomplete-input state form-control" placeholder="State" autocomplete="off" id="search_state" name="search_state" value="<?php
+		echo $_REQUEST['search_state'];
+	?>" /> <div class="skey"></div>
+								<div id="dir-search-button" class="hidden-xs">
+								 
+									<input type="submit" class="dir-searchsubmit btn btn-primary" value="Search" name="search_btn" id="dir-searchsubmit">
+								</div>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="dir-searchinput-settings"  id="dir-searchinput-settings">
-										<div id="dir-search-advanced">
-											<div class="searchbox-title text">Search by Profession</div>
+								<div class="dir-searchinput-settings"  id="dir-searchinput-settings">
+											<div id="dir-search-advanced">
+												<div class="searchbox-title text">Search by Profession</div>
 
-											<div class="search-slider-geo">
-												<select name="search_sector">
-                <option value="" <?php
-    selected($_REQUEST['search_sector'], '');
-?>>-- Job Sector --</option>
-                <option value="govt" <?php
-    selected($_REQUEST['search_sector'], 'govt');
-?>>Government</option>
-                <option value="private" <?php
-    selected($_REQUEST['search_sector'], 'private');
-?>>Private</option>
-            </select>
-             <input type="text" name="search_occp_type" placeholder="Job Post or Info" value="<?php
-    echo $_REQUEST['search_occp_type'];
-?>" /> 
+												<div class="search-slider-geo">
+													<select name="search_sector" class="form-control">
+					<option value="" <?php
+		selected($_REQUEST['search_sector'], '');
+	?>>-- Job Sector --</option>
+					<option value="govt" <?php
+		selected($_REQUEST['search_sector'], 'govt');
+	?>>Government</option>
+					<option value="private" <?php
+		selected($_REQUEST['search_sector'], 'private');
+	?>>Private</option>
+				</select>
+				 <input type="text" name="search_occp_type" class="form-control"  placeholder="Job Post or Info" value="<?php
+		echo $_REQUEST['search_occp_type'];
+	?>" /> 
 
-            <input type="text" name="search_occp_city" placeholder="Job City" value="<?php
-    echo $_REQUEST['search_occp_city'];
-?>" /> 
+				<input type="text" name="search_occp_city" class="form-control" placeholder="Job City" value="<?php
+		echo $_REQUEST['search_occp_city'];
+	?>" /> 
 
-            <input type="text" name="search_occp_state" placeholder="Job State" value="<?php
-    echo $_REQUEST['search_occp_state'];
-?>" /> 
+				<input type="text" name="search_occp_state" class="form-control" placeholder="Job State" value="<?php
+		echo $_REQUEST['search_occp_state'];
+	?>" /> 
+												</div>
 											</div>
+											<div id="dir-search-button" class="visible-xs">
+								 
+									<input type="submit" class="dir-searchsubmit btn btn-primary" value="Search" name="search_btn" id="dir-searchsubmit">
+								</div>
+										</div> 
 										</div>
-                                        <div id="dir-search-button" class="visible-xs">
-                             
-                                <input type="submit" class="dir-searchsubmit" value="Search" name="search_btn" id="dir-searchsubmit">
-                            </div>
-									</div> 
-                                    </div>
-                             
-							
-							<input type="hidden" value="yes" name="dir-search">
-							
-						</form>
+								 
+								
+								<input type="hidden" value="yes" name="dir-search">
+								
+							</form>
+						</div>
 					</div>
-				</div>
- 				
- 
-    <script type="text/javascript">
-		function equalizer(){
-			var highestBox = 0;
-			jQuery('.user_block').each(function(){
-				jQuery(this).css("height","");
-				if(jQuery(this).height() > highestBox) 
-				   highestBox = jQuery(this).height(); 
-			});  
-			jQuery('.user_block').height(highestBox);
-		}
-		function info_show(name,uid,height,width){
-				var ajaxurl="<?php echo admin_url( 'admin-ajax.php' ); ?>"; 
-                var data ={ action: "getUserDetails",  user_id:uid    };
-                jQuery.post(ajaxurl, data, function (response){
-                    jQuery(".TB_window").html(response);
-                    
-                });
-                jQuery("#TB_overlay").show();
-                jQuery(".TB_window").show();
-                jQuery(".TB_window").css("height", height);
-				//jQuery(".TB_window").css("width", '100%');
-				jQuery(".TB_window").css("top", (jQuery(window).scrollTop()+20 ));
-				//jQuery(".TB_window").css("left", (jQuery(window).width()-width)/2);
-				jQuery(".TB_window").css("z-index",'100051');
-				jQuery(".TB_window").css("position",'absolute');
-				
-				/* var TB_WIDTH = width, TB_HEIGHT = height;
-				 // set the new width and height dimensions here..
-				jQuery(".TB_window").animate({marginLeft: '"'+parseInt(((jQuery(window).width()-TB_WIDTH) / 2),10)
-				 + 'px"', width: TB_WIDTH + 'px', height: TB_HEIGHT + 'px',marginTop:'"'+parseInt(((jQuery(window).height()-TB_HEIGHT) / 2),10) + 
-				'px"'});*/
-                
-			}
-			function info_remove(){
-				jQuery("#TB_overlay").hide();
-                jQuery(".TB_window").hide();
-                jQuery(".TB_window").html('');
-			}
-		jQuery(document).ready(function(){
-			jQuery("#TB_overlay").hide();
-			 jQuery(".TB_window").hide();
-			var map_height = jQuery( window ).height();
-			jQuery("#mapnew").css("height",(map_height-20));
-			equalizer();
-			
-			jQuery( window ).resize(function() {
-			 equalizer();
-			});
-			jQuery( window ).on( "orientationchange", function( event ) {
-				equalizer();
-			});
-      
-             
-		});
-  
-
-
-
-</script>
- 
+				</div> 
 <?php
 if ($fivesdrafts)
     {  ?>
@@ -344,35 +283,51 @@ if ($fivesdrafts)
             $author_info = get_userdata($author->ID);
 ?>
     
-	   <li> 
-         <?php
-            echo '<div class="user_block"><figure class=" "><img src="' . get_noone_meta($author->ID,'gomap_marker_html') . '" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);" /></figure></div>';
-           echo '<h3 class="text-primary" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);">'.$author_info->first_name.' '.$author_info->last_name.'</h3>'; 
-           echo' <input type="button" class="btn btn-info btn-block" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);" value="View Full Info"> ';
-            echo'<span class="col-1-1 mobile-col-1-1 icons" >';
-            echo '<a href="mailto:'.$author_info->user_email.'" class="email col-1-5"></a>';
-            if($author_info->user_twitter)
-                echo'<a href="'.$author_info->user_twitter.'" class="twitter col-1-5" target="_blank"></a>';
-            if($author_info->user_fb_id)
-                echo'<a href="'.$author_info->user_fb_id.'" class="facebook col-1-5" target="_blank"></a>';
-            if($author_info->user_twitter)
-                echo'<a href="'.$author_info->linked_in.'" class="linkedin col-1-5" target="_blank"></a>';
-            if($author_info->user_twitter)
-                echo'<a href="'.$author_info->google_plus.'" class="googleplus col-1-5" target="_blank"></a>';
-            echo'</span>';?>
+	   <li class="well"> <div class="panel panel-default">
+                <div class="panel-heading"><?php echo $author_info->first_name.' '.$author_info->last_name; ?></div>
+                <div class="panel-body">
+                  <?php
+					echo '<div class="user_block row"><figure class=" "><img src="' . get_noone_meta($author->ID,'gomap_marker_html') . '" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);" /></figure></div>';
+				   
+				   echo' <div class="row"><input type="button" class="btn btn-primary btn-block" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);" value="View Full Info"></div>';
+					echo'<div class="row icons text-center" >';
+					echo '<a href="mailto:'.$author_info->user_email.'" class="email"></a>';
+					if($author_info->user_twitter)
+						echo'<a href="'.$author_info->user_twitter.'" class="twitter" target="_blank"></a>';
+					if($author_info->user_fb_id)
+						echo'<a href="'.$author_info->user_fb_id.'" class="facebook" target="_blank"></a>';
+					if($author_info->user_twitter)
+						echo'<a href="'.$author_info->linked_in.'" class="linkedin" target="_blank"></a>';
+					if($author_info->user_twitter)
+						echo'<a href="'.$author_info->google_plus.'" class="googleplus" target="_blank"></a>';
+					echo'</div>';?>
+                </div>
+              </div>
+         
                 
             </li>
         <?php
         } //$fivesdrafts as $author
-        echo'<div class="user_info_div">
-                <div id="TB_overlay" class="TB_overlayBG"></div>
-                <div class="TB_window"></div>
-             </div>';?>
+       ?>
         </ul>
+        <div class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onClick="javascript:info_remove();">×</button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body…</p>
+      </div>
+       
+    </div>
+  </div>
+</div>
     </div>
    <div class="container"  style="margin-top:20px;">
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-xs-12 text-center">
                 <ul class="pagination">
                     <?php echo $paging->fetch();?>
                 </ul>
@@ -391,5 +346,5 @@ if ($fivesdrafts)
 </div>
 <?php 
 }
-add_shortcode('noone_searching', 'noone_searching'); 
+add_shortcode('noone_grid_searching', 'noone_grid_searching'); 
 ?>

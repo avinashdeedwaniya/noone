@@ -4,44 +4,40 @@ $aID  =  $_REQUEST['user_id'];
 $author_info = get_userdata($aID);
 
 ?>
-<!DOCTYPE html>
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>Contact :: <?php echo $author_info->first_name.' '.$author_info->last_name;?></title>
+ 
   <script>
     function resetTabs(){
-        jQuery("#user_content > div.tab-pane").hide(); //Hide all content
-        jQuery("#tabs a").attr("id",""); //Reset id's      
+        jQuery("#myTabContent > div.tab-pane").removeClass('active in'); //Hide all content
+        jQuery("ul.nav-tabs li").removeClass('active'); //Reset id's      
     }
 
-    var myUrl = window.location.href; //get URL
-    var myUrlTab = myUrl.substring(myUrl.indexOf("#")); // For localhost/tabs.html#tab2, myUrlTab = #tab2     
-    var myUrlTabName = myUrlTab.substring(0,4); // For the above example, myUrlTabName = #tab
+    
     jQuery(document).ready(function(){
-        jQuery("#user_content > div.tab-pane").hide(); // Initially hide all content
-        jQuery("#tabs li:first a").attr("id","current"); // Activate first tab
-        jQuery("#tab1").fadeIn(); // Show first tab content
+        jQuery("#tabs li").removeClass("active");
+        jQuery("#tabs li:first").addClass("active"); // Activate first tab
+
+        jQuery("#myTabContent > div.tab-pane").removeClass('active in'); // Initially hide all content
+        jQuery("#myTabContent > div:first").addClass('active in'); // Show first tab content
         
-        jQuery("#tabs a").on("click",function(e) {
+        jQuery("ul.nav-tabs li").on("click",function(e) {
             e.preventDefault();
-            if (jQuery(this).attr("id") == "current"){ //detection for current tab
+            if (jQuery(this).attr("class") == "active"){ //detection for current tab
              return       
             }
             else{             
-            resetTabs();
-            jQuery(this).attr("id","current"); // Activate this
-            jQuery(jQuery(this).attr('name')).fadeIn(); // Show content for current tab
+              resetTabs();
+              jQuery(this).attr("class","active"); // Activate this
+              var select_a=jQuery(this).children('a').attr('name'); // Show content for current tab
+              jQuery(select_a).addClass('active in');
             }
         });
 
-        for (i = 1; i <= jQuery("#tabs li").length; i++) {
-          if (myUrlTab == myUrlTabName + i) {
-              resetTabs();
-              jQuery("a[name='"+myUrlTab+"']").attr("id","current"); // Activate url tab
-              jQuery(myUrlTab).fadeIn(); // Show url tab content        
-          }
-        }
- 
+        jQuery("#tab2").find('.panel-body').hide();
+        jQuery("#tab2").children(".row").children(".col-md-10:first").find('.panel-body').show();
+        jQuery(".panel-heading").on("click",function(){
+          jQuery("#tab2").find('.panel-body').hide();
+          jQuery(this).parent(".panel").find(".panel-body").show();
+        });
 
        
       jQuery("#send_message").validate({
@@ -114,30 +110,23 @@ $author_info = get_userdata($aID);
   });
   </script>
    
- </head>
-<body>
-
-  <div class="container">
-
-    <ul id="tabs" class="nav nav-tabs">
-      <li ><a id="current" href="#" name="#tab1"><?php echo $author_info->first_name.' '.$author_info->last_name;?></a></li>
-      <li><a id="" href="#" name="#tab2">Occupation</a></li>
-      <li ><a id="" href="#" name="#tab3">Send Message</a></li>
-      <li ><a href="javascript:void(0);" id="close-this"  onClick="info_remove()">X Close this</a></li>
-    </ul>
  
-  <div id="user_content" class="tab-content">
-      <div  id="tab1" class="tab-pane active">
+   <ul class="nav nav-tabs">
+      <li class="active"><a href="#" name="#tab1">General</a></li>
+      <li><a href="#" name="#tab2">Occupation</a></li>
+      <li ><a href="#" name="#tab3">Send Message</a></li>
+    </ul>
+  <div id="myTabContent" class="tab-content">
+      <div  id="tab1" class="tab-pane fade active in">
         <div class="row">
-          <div class="col-md-3 user_basic_info"><?php  echo noone_gravatar_filter('',$aID,'thumbnail','',$author_info->first_name.' '.$author_info->last_name);?>
+          <div class="col-md-3 user_basic_info"><img src="<?php echo get_noone_meta($aID,'thumbnail') ;?>" alt="<?php echo  $author_info->first_name.' '.$author_info->last_name ;?>" /><?php  //echo noone_gravatar_filter('',$aID,'thumbnail','',$author_info->first_name.' '.$author_info->last_name);?>
           <h3 class="text-primary"><?php echo $author_info->first_name.' '.$author_info->last_name;?></h3>
         <?php
-          echo 'Email: <a href="mailto:'.$author_info->user_email.'">'.$author_info->user_email.'</a>';
-           
+          echo (trim($author_info->user_email)!='')? '<a href="mailto:'.$author_info->user_email.'">'.$author_info->user_email.'</a>':'';           
             ?></div>
           <div class="col-md-9">
             <?php if(trim(get_the_author_meta('description',$aID))!=''){?>
-            <div><?php echo get_the_author_meta('description',$aID)?></div>  
+            <p><?php echo get_the_author_meta('description',$aID)?></p>  
             <?php }?>
              
           </div>
@@ -145,9 +134,10 @@ $author_info = get_userdata($aID);
          
         
       </div>
-      <div style="display: none;" id="tab2" class="tab-pane">
+      <div  id="tab2" class="tab-pane fade">
         <div class="row">
-          <div class="col-md-3"><?php
+          <div class="col-md-10">
+        <?php
         $self_title             = get_user_meta($aID, 'self_title', true);
         if($self_title!=''){
           $self_service           = get_user_meta($aID, 'self_service', true);
@@ -158,18 +148,28 @@ $author_info = get_userdata($aID);
           $self_state             = get_user_meta($aID, 'self_state', true);
           $self_country           = get_user_meta($aID, 'self_country', true);
         ?>
-         
-          <div class="text-left profession_info">   <h3 class="text-primary">Self Employee:</h3> 
-            <?php echo add_comma_br($self_service);?> 
-            <?php echo add_comma_br($self_info);?>
-            <?php echo add_comma_br($self_address_line_1)?>
-            <?php echo add_comma_br($self_address_line_2)?>
-            <?php echo add_comma($self_city)?> <?php echo add_comma_br($self_state)?>
-            <?php echo $self_country?>
-          </div>
-          <?php }
-          ?></div>
-          <div class="col-md-3"><?php
+             <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Self Employee</h3>
+              </div>
+              <div class="panel-body">
+                <?php echo add_comma_br($self_service);?> 
+                <?php echo add_comma_br($self_info);?>
+                <?php echo add_comma_br($self_address_line_1)?>
+                <?php echo add_comma_br($self_address_line_2)?>
+                <?php echo add_comma($self_city)?> <?php echo add_comma_br($self_state)?>
+                <?php echo $self_country?>
+              </div>
+            </div>
+            <?php }
+            ?>
+
+            
+
+            
+
+</div><div class="col-md-10">
+           <?php
           $service_title          = get_user_meta($aID, 'service_title', true);
         if($service_title!=''){
           $service_type           = get_user_meta($aID, 'service_type', true);
@@ -181,17 +181,26 @@ $author_info = get_userdata($aID);
           $service_state          = get_user_meta($aID, 'service_state', true);
           $service_country        = get_user_meta($aID, 'service_country', true);
         ?>
-          <div class="text-left profession_info"><h3 class="text-primary"><?php echo ($service_type=='govt')? 'Government': 'Private'; ?> Service</h3> 
-            <?php echo  add_comma_br($service_title);?> 
-            <?php echo  add_comma_br($service_post_name);?> 
-            <?php echo  add_comma_br($service_info);?> 
-            <?php echo add_comma_br($service_address_line_1)?> 
-            <?php echo add_comma_br($service_address_line_2)?> 
-            <?php echo add_comma($service_city)?> <?php echo add_comma_br($service_state)?>
-            <?php echo $service_country?>
-          </div>
-          <?php }?></div>
-          <div class="col-md-3"><?php $retire_title           = get_user_meta($aID, 'retire_title', true);
+        <div class="panel panel-success">
+              <div class="panel-heading">
+                <h3 class="panel-title"><?php echo ($service_type=='govt')? 'Government': 'Private'; ?> Service</h3>
+              </div>
+              <div class="panel-body">
+                <?php echo  add_comma_br($service_title);?> 
+                <?php echo  add_comma_br($service_post_name);?> 
+                <?php echo  add_comma_br($service_info);?> 
+                <?php echo add_comma_br($service_address_line_1)?> 
+                <?php echo add_comma_br($service_address_line_2)?> 
+                <?php echo add_comma($service_city)?> <?php echo add_comma_br($service_state)?>
+                <?php echo $service_country?>
+              </div>
+            </div>
+
+          
+          <?php }?> 
+
+</div><div class="col-md-10">
+           <?php $retire_title           = get_user_meta($aID, 'retire_title', true);
         if($retire_title!=''){
           $retire_type            = get_user_meta($aID, 'retire_type', true);
           $retire_post_name       = get_user_meta($aID, 'retire_post_name', true);
@@ -202,17 +211,25 @@ $author_info = get_userdata($aID);
           $retire_state           = get_user_meta($aID, 'retire_state', true);
           $retire_country         = get_user_meta($aID, 'retire_country', true);
         ?>
-          <div class="text-left profession_info">   <h3 class="text-primary">Retired from <?php echo ($retire_type=='govt')?'Government': 'Private'; ?> Service</h3> 
-            <?php echo  add_comma_br($retire_title);?>
+        <div class="panel panel-warning">
+              <div class="panel-heading">
+                <h3 class="panel-title">Retired from <?php echo ($retire_type=='govt')?'Government': 'Private'; ?> Service</h3>
+              </div>
+              <div class="panel-body">
+                <?php echo  add_comma_br($retire_title);?>
             <?php echo  add_comma_br($retire_post_name);?> 
             <?php echo  add_comma_br($retire_info);?>
             <?php echo add_comma_br($retire_address_line_1)?>
             <?php echo add_comma_br($retire_address_line_2)?>
             <?php echo add_comma($retire_city)?> <?php echo add_comma_br($retire_state)?>
             <?php echo $retire_country?>
-          </div>
-          <?php } ?></div>
-          <div class="col-md-3"><?php $social_title           = get_user_meta($aID, 'social_title', true);
+              </div>
+            </div>
+
+         
+          <?php } ?> 
+  </div><div class="col-md-10">
+           <?php $social_title           = get_user_meta($aID, 'social_title', true);
           if($social_title!=''){
           $social_type            = get_user_meta($aID, 'social_type', true);
           $social_work_as         = get_user_meta($aID, 'social_work_as', true);
@@ -223,7 +240,11 @@ $author_info = get_userdata($aID);
           $social_state           = get_user_meta($aID, 'social_state', true);
           $social_country         = get_user_meta($aID, 'social_country', true);
         ?>
-          <div class="text-left profession_info">   <h3 class="text-primary">Social Worker at <?php  echo ($social_type=='govt')?'Government': 'Private'; ?> place</h3> 
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Social Worker at <?php  echo ($social_type=='govt')?'Government': 'Private'; ?> place</h3>
+          </div>
+          <div class="panel-body">
             <?php echo  add_comma_br($social_title);?>
             <?php echo  add_comma_br($social_work_as);?>
             <?php echo  add_comma_br($social_info);?>
@@ -232,24 +253,70 @@ $author_info = get_userdata($aID);
             <?php echo add_comma($social_city)?> <?php echo add_comma_br($social_state)?>
             <?php echo $social_country?>
           </div>
+        </div>
+          
           <?php }
-          ?></div>
-           
+          ?> 
+  </div>    
         </div> 
        </div>
-      <div style="display: none;" id="tab3" class="tab-pane">
+      <div  id="tab3" class="tab-pane fade">
         <div class="row">
           <div class="col-md-6">
-            <h3 class="text-primary">Send Message</h3>
-           <form id="send_message">
-          <dl> 
-            <dt> <input type="text" placeholder="your email address" id="from" name="from" class="form-control"  ></dt> 
-            <dt> <input type="text" placeholder="your name" id="your_name" name="your_name" class="form-control"  ></dt> 
-             <dt> <input type="text" placeholder="subject" id="subject" name="subject" class="form-control" ></dt>
-             <dt> <input type="text" placeholder="your contact number"  id="contact_no" class="form-control" name="contact_no" ></dt>
-            <dt><textarea placeholder="your message" id="user_message" class="form-control" name="user_message" ></textarea> </dt> 
-            <dt>&nbsp;</dt><dd><input type="submit" id="send_message_btn" class="btn btn-info btn-block" value="Send"></dd></dl>
-           </form>
+            <div class="well bs-component">
+              <form class="form-horizontal" id="send_message">
+                <fieldset>
+                  <legend>Send Message</legend>
+                  <div class="form-group">
+                    <label for="inputEmail" class="col-lg-2 control-label">Name</label>
+                    <div class="col-lg-10">
+                      <input type="text"  id="your_name" name="your_name" class="form-control"  >
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputEmail" class="col-lg-2 control-label">Email</label>
+                    <div class="col-lg-10">
+                      <input type="text" id="from" name="from" class="form-control"  >
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputEmail" class="col-lg-2 control-label">Subject</label>
+                    <div class="col-lg-10">
+                     <input type="text" id="subject" name="subject" class="form-control" >
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputEmail" class="col-lg-2 control-label">Contact No.</label>
+                    <div class="col-lg-10">
+                     <input type="text" id="contact_no" class="form-control" name="contact_no" >
+                    </div>
+                  </div>
+                   
+                  <div class="form-group">
+                    <label for="textArea" class="col-lg-2 control-label">Textarea</label>
+                    <div class="col-lg-10">
+                      <textarea  id="user_message" class="form-control" name="user_message" ></textarea>
+ 
+                      <!-- <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span> -->
+                    </div>
+                  </div>
+                   
+                   
+                  <div class="form-group">
+                    <div class="col-lg-10 col-lg-offset-2">
+                      
+                      <button type="submit" id="send_message_btn" class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </fieldset>
+              </form>
+            <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div></div>
+
+ 
+            
           </div>
           <div class="col-md-6">
                <div class="contact_address_block">   <h3 class="text-primary">Contact Address:</h3> 
@@ -264,22 +331,24 @@ $author_info = get_userdata($aID);
           
            
       </div>
+      <?php
+      if(trim($author_info->user_twitter)!='' ||trim($author_info->user_fb_id)!='' ||trim($author_info->linked_in)!='' ||trim($author_info->google_plus)!='' ){?>
   <hr>
   <div class="row"><div class="col-md-4">
-
     <h4 class="text-primary">Contact <?php echo $author_info->first_name.' '.$author_info->last_name;?>:</h4>
             </div>
             <div class="col-md-8 text-left"><?php echo'<span class="icons">';
             if($author_info->user_twitter)
-                echo'<a href="'.$author_info->user_twitter.'" class="twitter" target="_blank">&nbsp;</a>';
+                echo'<a href="'.$author_info->user_twitter.'" class="twitter" target="_blank"></a>';
             if($author_info->user_fb_id)
-                echo'<a href="'.$author_info->user_fb_id.'" class="facebook" target="_blank">&nbsp;</a>';
-            if($author_info->user_twitter)
-                echo'<a href="'.$author_info->linked_in.'" class="linkedin" target="_blank">&nbsp;</a>';
-            if($author_info->user_twitter)
-                echo'<a href="'.$author_info->google_plus.'" class="googleplus" target="_blank">&nbsp;</a>';
+                echo'<a href="'.$author_info->user_fb_id.'" class="facebook" target="_blank"></a>';
+            if($author_info->linked_in)
+                echo'<a href="'.$author_info->linked_in.'" class="linkedin" target="_blank"></a>';
+            if($author_info->google_plus)
+                echo'<a href="'.$author_info->google_plus.'" class="googleplus" target="_blank"></a>';
             echo'</span>';?></div>
-   </div>      
+   </div>
+   <?php }?>      
  </div>
  </div>
-</body></html>
+ 

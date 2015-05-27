@@ -114,18 +114,27 @@ function sgetval(id,value) {
 				var ajaxurl=nooneobject.nooneajaxurl; 
                 var data ={ action: "getUserDetails",  user_id:uid    };
                 jQuery.post(ajaxurl, data, function (response){
-                    jQuery(".modal-body").html(response);
+                    jQuery(".TB_window").html(response);
                     
                 });
-                jQuery("h4.modal-title").html(name);
-                jQuery(".modal").show();
-                
- 
+                jQuery("#TB_overlay").show();
+                jQuery(".TB_window").show();
+                jQuery(".TB_window").css("height", height);
+				//jQuery(".TB_window").css("width", '100%');
+				jQuery(".TB_window").css("top", (jQuery(window).scrollTop()+20 ));
+				//jQuery(".TB_window").css("left", (jQuery(window).width()-width)/2);
+				jQuery(".TB_window").css("z-index",'100051');
+				jQuery(".TB_window").css("position",'absolute');
+				
+				/* var TB_WIDTH = width, TB_HEIGHT = height;
+				 // set the new width and height dimensions here..
+				jQuery(".TB_window").animate({marginLeft: '"'+parseInt(((jQuery(window).width()-TB_WIDTH) / 2),10)
+				 + 'px"', width: TB_WIDTH + 'px', height: TB_HEIGHT + 'px',marginTop:'"'+parseInt(((jQuery(window).height()-TB_HEIGHT) / 2),10) + 
+				'px"'});*/
                 
 			}
 			function info_remove(){
- 
-                jQuery(".modal").hide();
-                jQuery("h4.modal-title").html('');
-                jQuery(".modal-body").html('');
+				jQuery("#TB_overlay").hide();
+                jQuery(".TB_window").hide();
+                jQuery(".TB_window").html('');
 			}

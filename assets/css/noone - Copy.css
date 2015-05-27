@@ -57,9 +57,8 @@
 #directory-search.map-search #dir-search-form {
     position: absolute;
     right: 0px;
-    bottom: 0px;
-    margin-bottom: 0px !important;
-   /* padding: 10px 35px 15px;*/
+    bottom: -2px;
+    padding: 10px 35px 15px;
 
 }
 #directory-search.no-map #dir-search-form {
@@ -69,7 +68,7 @@
     float: none;
     margin: auto !important;
     max-width: 1170px;
-   /* padding: 10px 35px 15px;*/
+    padding: 10px 35px 15px;
 }
  #directory-search.no-map #dir-search-inputs{
     padding-right:10px; 
@@ -85,12 +84,13 @@
     margin-bottom: 16px;
     font-size: 16px;
     line-height: 25px;
+    font-family: "FrutigerLTW01-45Light",Helvetica,Arial,sans-serif;
     font-weight: normal;
 }
 #directory-search.map-search input,#directory-search.map-search select {
-/*-webkit-box-sizing: border-box;
+-webkit-box-sizing: border-box;
 -moz-box-sizing: border-box;
-box-sizing: border-box;*/
+box-sizing: border-box;
 display: block;
 margin: 0 0 10px;
 }
@@ -125,25 +125,25 @@ margin: 0 0 10px;
 		position: static;
 		right: 0px;
 		bottom: -2px;
-		/*padding: 25px 35px 33px;*/
+		padding: 25px 35px 33px;
  
 	}
 	#directory-search.map-search .searchbox-title {
 		color: #ffffff;
 		font-size: 16px;
-		/*margin-bottom: 24px;*/
+		margin-bottom: 24px;
 	}
 	#directory-search.map-search input,#directory-search.map-search select {
-		/*-webkit-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
-		box-sizing: border-box;*/
+		box-sizing: border-box;
 		display: block;
-		/*margin: 0 0 20px;*/
+		margin: 0 0 20px;
 	}
 	#directory-search input, #directory-search select {
 		width: 100%;
 		height: 30px;
-		/*padding: 0 12px 0;*/
+		padding: 0 12px 0;
 		line-height: 100%;
 	 
 	}
@@ -186,7 +186,7 @@ font-family: "ralewayregular";
 font-size: 14px;
 font-weight: bold;
 }
-/*.map-item-info .address {
+.map-item-info .address {
 border-bottom: 1px dotted #cccccc;
 margin-bottom: 15px;
 padding-bottom: 5px;
@@ -217,21 +217,21 @@ position: absolute;
 width: 37px;
 background: url('http://preview.ait-themes.com/businessfinder/wp1/wp-content/themes/businessfinder/design/img/map-pin-description.png') no-repeat;
 }
- */
+ 
  /* #close-this{float: right;clear: both; width:80px; height:auto; padding: 3px 5px; text-align: center; color: #ffffff!important; background: #38A8E0;position: absolute;top: 0; right: 0;}*/
-  /*#user_content {border-top: 2px solid #3d3d3d; padding: 10px; background-color: #fff;}
+  #user_content {border-top: 2px solid #3d3d3d; padding: 10px; background-color: #fff;}
   #user_content .user-avatar/*{ width: 150px; float: left; margin:10px 20px 0 10px;*/}
-   
- /* .user_basic_info h2, .user_basic_info .user_email, .user_basic_info .social_media {width: 100%; margin:0 0 10px 0;}
+  #user_content .user_basic_info{ /*width: auto; float: left;*/}
+  .user_basic_info h2, .user_basic_info .user_email, .user_basic_info .social_media {width: 100%; margin:0 0 10px 0;}
   #user_content p {clear: both; margin-top: 20px; float: left; margin-bottom: 10px;}
-  form#send_message input[type=text], form#send_message textarea{border: 1px solid #3d3d3d; color: #000000;font-size: 13px;margin-bottom: 5px; }
-  
+  form#send_message input[type=text], form#send_message textarea{border: 1px solid #3d3d3d; color: #000000;font-size: 13px;margin-bottom: 5px;/*width: 250px;*/}
+  form#send_message textarea{/*width: 400px;*/}
   form#send_message input:focus, form#send_message textarea:focus{border:2px solid #3d3d3d;}
    
 .bottom_social_communication{padding: 10px; background: #000; color: #ffffff;}
 .bottom_social_communication p{ font-weight: bold;   margin: 0px;}
 .contact_address_block {width: 100%;}
-.contact_address_block h2{ margin: 0 0 5px 0; font-size: 18px;} */
+.contact_address_block h2{ margin: 0 0 5px 0; font-size: 18px;} 
 	#state_list_ul{
         width: 200px;
         height:auto;
@@ -253,7 +253,7 @@ background: url('http://preview.ait-themes.com/businessfinder/wp1/wp-content/the
 #dir-searchinput-settings-position .searchbox-title {
     color: #ffffff;
     font-size: 16px;
-    /*margin-bottom: 24px;*/
+    margin-bottom: 24px;
 }
 #dir-searchinput-settings-position .search-slider-geo:before, #dir-searchinput-settings-position .search-slider-geo:after {
     content: "";
@@ -646,24 +646,19 @@ ul.ul_user > li{
     width: 85%;
     margin-top: 8px;
 }
-/*.nav-tabs > li > a {  
+.nav-tabs > li > a {  
   background-color: #fff
-}*/
+}
 .error.form-control {
- /* border-color: #a94442;
+  border-color: #a94442;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);*/
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
  
 label.error  {
-  /*color: #a94442;*/
-}
-ul.nav{
-    margin-bottom: 10.5px;
+  color: #a94442;
 }
 div.profession_info{
      
     padding-left: 20px;
 }
-label.error{color: #d9534f;}
-.panel-heading{ cursor: pointer;}

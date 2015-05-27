@@ -1,19 +1,14 @@
 <?php
 function noone_searching()
 {
-    global $wpdb; 
+    global $wpdb;
     require_once('paging.class.php');
     $paging = new paging;
     $having_qry='';
     $distance_select='';
-    # DISTANCE QUERY
-    if (isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on')
-    {
-        $distance_select=' ,( 3959 * acos( cos( radians('.$_REQUEST['user_lat'].') ) * cos( radians( mt30.meta_value ) ) * cos( radians( mt31.meta_value ) - radians('.$_REQUEST['user_long'].') ) + sin( radians('.$_REQUEST['user_lat'].') ) * sin( radians( mt30.meta_value ) ) ) ) AS distance';
-        $having_qry=' HAVING distance < '.$_REQUEST['geo-radius'];
-    }
+     
 
-    $SQL    = "SELECT distinct(".$wpdb->prefix."users.ID) as ID,display_name  ".$distance_select." FROM ".$wpdb->prefix."users";
+    $SQL    = "SELECT distinct(".$wpdb->prefix."users.ID) as ID,display_name FROM ".$wpdb->prefix."users";
     if (isset($_REQUEST['search_name']) && trim($_REQUEST['search_name']) != '')
     {
         $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta ON (".$wpdb->prefix."users.ID = ".$wpdb->prefix."usermeta.user_id)
@@ -170,10 +165,10 @@ function noone_searching()
         ) ";
     }
    $TSQL            = $SQL . " AND
-(mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY display_name ASC ";
+(mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ORDER BY display_name ASC ";
     $t_record        = $wpdb->get_results($TSQL);
     $total_records   = count($t_record);
-    $record_per_page = 16;
+    $record_per_page = 4;
     $paged = ( get_query_var( 'page' ) ) ? absint( get_query_var( 'page' ) ) : 1;
     $paging->assign(get_permalink().'?search_name='.$_REQUEST['search_name'].'&search_city='.$_REQUEST['search_city'].'&search_state='.$_REQUEST['search_state'].'&search_sector='.$_REQUEST['search_sector'].'&search_occp_type='.$_REQUEST['search_occp_type'].'&search_occp_city='.$_REQUEST['search_occp_city'].'&search_occp_state='.$_REQUEST['search_occp_state'].'&search_btn='.$_REQUEST['search_btn'].'&dir-search='.$_REQUEST['dir-search'].'', $total_records, $record_per_page,$paged);
     $sql_limit = $paging->sql_limit();
@@ -182,24 +177,19 @@ function noone_searching()
     $fivesdrafts = $wpdb->get_results($SQL);
     echo '<div class="author-entry">';
 ?>
-<script src="http://web-aa13e14a-ff31-48e0-b3a5-ec384bfde217.runnable.com/js/jquery-validate.js"></script> 
-<link rel="stylesheet" type="text/css" href="<?php echo plugins_url('assets/css/round-pattern/round.css', __FILE__);?>" />
-          
-     
-        <script type="text/javascript" src="<?php echo plugins_url('assets/js/round-pattern/modernizr.custom.79639.js', __FILE__);?>"></script> 
-        <!--[if lte IE 8]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
-
-
-   <div id="mapnew" style="width:100%; clear:both;" ></div> 
-   <div data-interactive="yes" class="map-search" id="directory-search">
+<script src="<?php echo plugins_url('assets/js/jquery.validate.js', __FILE__)?>"></script> 
+ 
+   <div data-interactive="yes" class="map-search no-map" id="directory-search">
 					<div class="wrapper">
 						<form class="dir-searchform"  method="get" action="<?php echo get_permalink();?>"
 						 id="dir-search-form" 
 						 >
-						      <input type="text" name="user_lat" value="<?php echo $_REQUEST['user_lat'];?>" id="user_lat">
-                              <input type="text" id="user_long" value="<?php echo $_REQUEST['user_long'];?>" name="user_long">
-							<p class="searchbox-title">Search By Person</p>
-							<div id="dir-search-inputs">
+						      <input type="hidden" name="user_lat" value="<?php echo $_REQUEST['user_lat'];?>" id="user_lat">
+                              <input type="hidden" id="user_long" value="<?php echo $_REQUEST['user_long'];?>" name="user_long">
+							
+                            <div class="clearfix">
+							<div id="dir-search-inputs" >
+                                <p class="searchbox-title">Search By Person</p>
 								<div id="dir-holder">
 									<div class="dir-holder-wrap">
 										<input type="text" name="search_name" placeholder="Full Name" 
@@ -213,11 +203,14 @@ function noone_searching()
 									<input type="text" class="ui-autocomplete-input state" placeholder="State" autocomplete="off" id="search_state" name="search_state" value="<?php
     echo $_REQUEST['search_state'];
 ?>" /> <div class="skey"></div>
-
+                            <div id="dir-search-button" class="hidden-xs">
+                             
+                                <input type="submit" class="dir-searchsubmit" value="Search" name="search_btn" id="dir-searchsubmit">
+                            </div>
 									</div>
 								</div>
 							</div>
-							<div class="dir-searchinput-settings" id="dir-searchinput-settings">
+							<div class="dir-searchinput-settings"  id="dir-searchinput-settings">
 										<div id="dir-search-advanced">
 											<div class="searchbox-title text">Search by Profession</div>
 
@@ -246,40 +239,14 @@ function noone_searching()
 ?>" /> 
 											</div>
 										</div>
+                                        <div id="dir-search-button" class="visible-xs">
+                             
+                                <input type="submit" class="dir-searchsubmit" value="Search" name="search_btn" id="dir-searchsubmit">
+                            </div>
 									</div> 
-                                    <div class="dir-searchinput-settings" id="dir-searchinput-settings-position">
-                                        <div id="dir-search-advanced">
-                                            <div class="searchbox-title text">Search around my position</div>
-
-                                            <div class="search-slider-geo">
-                                                <div class="geo-button">
-                                                    <?php
-                                                    echo $_REQUEST['geo'];
-                                                    if($_REQUEST['geo']=='on'){
-                                                    ?>
-                                                    <input type="checkbox" checked="checked" id="dir-searchinput-geo" name="geo" class="hidden">
-                                                    <div class="iphone-style" rel="dir-searchinput-geo">&nbsp;</div>
-                                                    <?php }else{
-                                                        ?>
-                                                        <input type="checkbox"   id="dir-searchinput-geo" name="geo" class="hidden">
-                                                    <div class="iphone-style off" rel="dir-searchinput-geo">&nbsp;</div>
-                                                        <?php
-                                                    } ?>
-                                                </div>
-
-                                                <div id="geo-slider"></div>
-                                                <div class="text-geo-radius clear">
-                                                    <input type="text" value="<?php echo $_REQUEST['geo-radius'];?>" id="dir-searchinput-geo-radius" name="geo-radius">
-                                                    <div class="metric">km</div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
-                                    
-							<div id="dir-search-button">
-							 
-								<input type="submit" class="dir-searchsubmit" value="Search" name="search_btn" id="dir-searchsubmit">
-							</div>
+                             
+							
 							<input type="hidden" value="yes" name="dir-search">
 							
 						</form>
@@ -338,63 +305,10 @@ function noone_searching()
 			jQuery( window ).on( "orientationchange", function( event ) {
 				equalizer();
 			});
-            jQuery( "#geo-slider" ).slider({
-                range: "max",
-                min: 0,
-                max: 100,
-                value: <?php echo (isset($_REQUEST['geo-radius']) ? $_REQUEST['geo-radius'] : 10)?>,
-                slide: function( event, ui ) {
-                    jQuery( "#dir-searchinput-geo-radius" ).val( ui.value );
-                }
-
-            });
-            jQuery( "#dir-searchinput-geo-radius" ).val( jQuery( "#geo-slider" ).slider( "value" ) );
+      
+             
 		});
-    jQuery(function() { 
-        jQuery("#mapnew").goMap({
-			maptype: 'ROADMAP',
-            zoom:10,
-            markers: [
-            <?php
-        $i = 0;
-        foreach ($fivesdrafts as $author)
-        {
-
-            $i++;
-            $author_info = get_userdata($author->ID);
   
-            if (trim($author_info->perma_lat) != '' && trim($author_info->perma_long) != '')
-            {
-                if($i%2==0){
-                    $icon=plugins_url('assets/images/pin-clubs.png',__FILE__);
-                }
-                elseif($i%3==0){
-                     $icon=plugins_url('assets/images/pin-juices.png',__FILE__);
-                }
-                else{
-                    $icon=plugins_url('assets/images/pin-muiffins.png',__FILE__);
-                }
-                $map_arr[] = "{  
-                        latitude: " . $author_info->perma_lat . ", 
-                        longitude: " . $author_info->perma_long . ", 
-                        id: 'map_" . $i . "', 
-                        icon: '".$icon."',
-							shadow: 'http://preview.ait-themes.com/businessfinder/wp1/wp-content/themes/businessfinder/design/img/map-icon/icon-shadow.png',
-                        html: { content: '<div class=\"marker-holder\"><div class=\"marker-content with-image\"><img src=\"".get_noone_meta($author_info->ID,'gomap_marker_html')."\" ><div class=\"map-item-info\"><div class=\"title\">".$author_info->first_name." ".$author_info->last_name."</div><div class=\"address\">".$author_info->address_line_1." ".$author_info->address_line_2."<br/>".$author_info->city.", ".$author_info->state."<br/>".$author_info->country."</div><a href=\"javascript:void(0);\" onClick=\"javascript:info_show(\'".$author_info->first_name." ".$author_info->last_name."\',".$author_info->ID.",450,800);\" class=\"more-button\">VIEW MORE</a></div><div class=\"arrow\" ></div></div></div>'}
-                        }";
-            } 
-        } 
-         
-        if(!empty($map_arr))
-            echo implode(',', $map_arr);
-        else
-            echo'';
-?>
-           ] 
-        }); 
-
-
-}); 
 
 
 
@@ -403,7 +317,27 @@ function noone_searching()
 <?php
 if ($fivesdrafts)
     {
-        echo'<div class="grid"  style="margin-top:20px;"> <div class="wcontainer">
+		?>
+        <div class="container"  style="margin-top:20px;">
+        <div class="row search_data" style="margin-top:20px;">
+        <div class="col-sm-2">You are searching: </div>
+        <div class="col-sm-10">
+            <?php if (isset($_REQUEST['search_name']) && trim($_REQUEST['search_name']) != '')
+            {?>
+            <div class="col-sm-3"><?php echo $_REQUEST['search_name'];?> </div>
+            <?php }
+            if (isset($_REQUEST['search_city']) && trim($_REQUEST['search_city']) != '')
+                {?>
+            <div class="col-sm-3">in <?php echo $_REQUEST['search_city'];?> </div>
+            <?php }?>
+            <?php if (isset($_REQUEST['search_state']) && trim($_REQUEST['search_state']) != '')
+                {?>
+            <div class="col-sm-3">in <?php echo $_REQUEST['search_state'];?> </div>
+            <?php }?>
+             
+        </div>
+        </div>
+         <div class="wcontainer">
         
       
             
@@ -411,8 +345,8 @@ if ($fivesdrafts)
             
                 <ul class="ch-grid">
                      
-                    
-                ';
+      <?php              
+                 
         $i = 0;
         foreach ($fivesdrafts as $author)
         {
@@ -424,42 +358,18 @@ if ($fivesdrafts)
                             <div class="ch-info">
                                 <h3><?php echo $author_info->first_name.' '.$author_info->last_name;?></h3>
                                 <?php echo'<span class="icons" >';
-            echo '<a href="mailto:'.$author_info->user_email.'" >email</a>';
-            if($author_info->user_twitter)
-                echo'<a href="'.$author_info->user_twitter.'"  target="_blank">twitter</a>';
-            if($author_info->user_fb_id)
-                echo'<a href="'.$author_info->user_fb_id.'"  target="_blank">fb</a>';
-            if($author_info->linked_in)
-                echo'<a href="'.$author_info->linked_in.'"  target="_blank">ln</a>';
-            if($author_info->google_plus)
-                echo'<a href="'.$author_info->google_plus.'"  target="_blank">g</a>';
-            echo'</span>';?>
+									echo '<a href="mailto:'.$author_info->user_email.'" >email</a>';
+									if($author_info->user_twitter)
+										echo'<a href="'.$author_info->user_twitter.'"  target="_blank">twitter</a>';
+									if($author_info->user_fb_id)
+										echo'<a href="'.$author_info->user_fb_id.'"  target="_blank">fb</a>';
+									if($author_info->linked_in)
+										echo'<a href="'.$author_info->linked_in.'"  target="_blank">ln</a>';
+									if($author_info->google_plus)
+										echo'<a href="'.$author_info->google_plus.'"  target="_blank">g</a>';
+									echo'</span>';?>
                                 <p><a <?php echo 'onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);"';?> href="javascript:void(0);">View Full Info</a>
-                                    <?php if (trim($author_info->perma_lat) != '' && trim($author_info->perma_long) != '')
-            {
-?>
-                <a id="map_but_<?php echo $i;?>" href="javascript:void(0);"> View on Map</a>
-                <script type="text/javascript">
-                jQuery(function(){
-                 jQuery("#map_but_<?php
-                    echo $i;
-    ?>").click(function(){  
-                        jQuery.goMap.setMap({latitude:'<?php
-                    echo $author_info->perma_lat;?>', longitude:'<?php
-                    echo $author_info->perma_long;?>'
-
-    }); 
-                        jQuery.goMap.setMap({zoom: 7});
-                        google.maps.event.trigger(jQuery(jQuery.goMap.mapId).data('map_<?php
-                    echo $i;
-    ?>'), 'click'); 
-    jQuery( window ).scrollTop(0);
-                    }); 
-                });
-                </script>
-            <?php
-           
-            }?></p>
+                                 </p>
                             </div>
                         </div>
                     </li>
@@ -467,19 +377,18 @@ if ($fivesdrafts)
          <?php   
         
         } //$fivesdrafts as $author
-        echo'</ul></section>
-            
-        </div><div class="user_info_div"><div id="TB_overlay" class="TB_overlayBG"></div><div class="TB_window"></div></div> ';
-?>
- <div class="grid"  style="margin-top:20px;"><div class="col-1-1">
-<div class="pages_div">
-
-    <?php
-        echo $paging->fetch();
-?>
-</div>
-</div>
-</div>
+       ?>
+        </ul></section>
+    </div>
+	<div class="container"  style="margin-top:20px;">
+        <div class="row">
+            <div class="col-xs-12">
+                <ul class="pagination">
+                    <?php echo $paging->fetch();?>
+                </ul>
+            </div>
+        </div>
+    </div>
 <?php
     } //$fivesdrafts
     else
@@ -488,9 +397,9 @@ if ($fivesdrafts)
    <h2>Apologies, but no results were found for the request.</h2>
     <?php
     }
-    echo '
-                
-            </div>';
+     ?>
+</div>
+<?php 
 }
 add_shortcode('noone_searching', 'noone_searching'); 
 ?>
