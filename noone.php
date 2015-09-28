@@ -2,14 +2,21 @@
 /*
 Plugin Name: No-One Plugin
 Description: Listing + Details
-
->> NEED TO WORK ON LAT LONG save in DB while updating/creating user
->> how we check that which address will show on map while searching
 **/
 
 register_activation_hook(__FILE__, 'noone_install');
+register_deactivation_hook(__FILE__, 'noone_deactivation');
+
+function noone_deactivation(){
+	global $wpdb;
+	$option_name = 'noone_active';
+	delete_option( $option_name );	
+}
 function noone_install() {
-global $wpdb;
+	
+	global $wpdb;
+	add_option( 'noone_active', '1', '', 'yes' );
+	
     $post_if = $wpdb->get_var("SELECT count(post_name) FROM $wpdb->posts WHERE post_name like 'user-search' AND post_type='page'");
     if($post_if < 1){
         $my_page = array(
@@ -40,6 +47,9 @@ add_action("template_redirect", 'nonone_theme_redirect');
 
 function nonone_theme_redirect() {
 	
+	if(!get_option('noone_active'))
+		return false;
+		
     global $wp;
     $plugindir = dirname( __FILE__ );
 	if ($wp->query_vars["pagename"] == 'user-search') {
@@ -56,6 +66,10 @@ function nonone_theme_redirect() {
 }
 
 function do_theme_redirect($url) {
+	
+	if(!get_option('noone_active'))
+		return false;
+		
     global $post, $wp_query;
     if (have_posts()) {
         include($url);
@@ -74,6 +88,9 @@ function add_noone_image_size(){
 
 function noone_users($user)
 {
+	if(!get_option('noone_active'))
+		return false;
+	
     $userid                 = $user->ID;
     $address_line_1         = get_user_meta($userid, 'address_line_1', true);
    // $address_line_2         = get_user_meta($userid, 'address_line_2', true);
@@ -149,22 +166,7 @@ function noone_users($user)
         $btn_text = 'Change Current Image';
     }
 ?>
-<style type="text/css">
-    #district_list_ul,#state_list_ul{
-        width: 150px;
-        height:auto;
-        padding: 10px;
-        max-height: 250px;
-        overflow: scroll;
-        border: 1px solid #ccc;
-        position: absolute;
-        top: 20;
-        left: 0;
-        background: #fff;
-    }
-    .key,.skey{position: relative; background: #fff;}
-    #district_list_ul li a, #state_list_ul li a{cursor: pointer;}
-</style>
+ 
    <div class="wrap">
 
         <div class="icon32" id="icon-users"><br></div><h2><u>Permanent Address</u></h2>
@@ -254,15 +256,7 @@ function noone_users($user)
                     <td><textarea class="regular-text" id="address_line_1" name="address_line_1"><?php echo $address_line_1;?></textarea>
                      <span class="description">Flat No./Building Name/Plot No./Street Name</span></td>
                 </tr>
-
-                <!-- <tr>
-                    <th><label for="address_line_2">Address Line-2</label></th>
-                    <td><input type="text" class="regular-text"  value="<?php
-    //echo $address_line_2;
-?>" id="address_line_2" name="address_line_2"> <span class="description">Area Name/Land Mark</span></td>
-                </tr> -->
-
-                <tr>
+				<tr>
                     <th><label for="city">City</label></th>
                     <td><input type="text" class="regular-text"  value="<?php
     echo $city;
@@ -833,37 +827,35 @@ function noone_enqueue_init() {
       
 }*/
 function remove_all_theme_styles() {
-    global $wp_styles;
- 
+    global $wp_styles; 
     $wp_styles->queue = array();
     wp_enqueue_script('jquery');
     wp_enqueue_script('noone_google_map', 'http://maps.google.com/maps/api/js?sensor=false');
     wp_enqueue_script('noone_jquery_scroll', plugins_url('assets/js/jquery-ui.js', __FILE__));
-     
+    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));
     wp_enqueue_script('noone_gomap', plugins_url('assets/js/jquery.gomap-1.3.2.js', __FILE__));
     wp_enqueue_script('noone_js', plugins_url('assets/js/noone.js', __FILE__));
-    wp_enqueue_style( 'noonecss', plugins_url('assets/css/noone.css', __FILE__) );    
-    wp_enqueue_style( 'noonegridcss', plugins_url( 'assets/css/bootstrap.css', __FILE__));
-    //wp_enqueue_style( 'noonegridtheme', plugins_url( 'assets/css/bootstrap-theme.css', __FILE__)); 
+    wp_enqueue_style('noonecss', plugins_url('assets/css/noone.css', __FILE__) );    
+    wp_enqueue_style('noonegridcss', plugins_url( 'assets/css/bootstrap.css', __FILE__));
+    wp_enqueue_style('mCustomScrollbarcss', plugins_url( 'assets/css/jquery.mCustomScrollbar.css', __FILE__));
     wp_enqueue_script('media-upload');
     wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
     wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0'); 
 }
 
 function remove_all_theme_styles_no_map() {
-    global $wp_styles;
- 
+    global $wp_styles; 
     $wp_styles->queue = array();
     wp_enqueue_script('jquery');
     wp_enqueue_script('noone_jquery_scroll', plugins_url('assets/js/jquery-ui.js', __FILE__));
     wp_enqueue_script('noone_js', plugins_url('assets/js/noone.js', __FILE__));
-    wp_enqueue_style( 'noonecss', plugins_url('assets/css/noone.css', __FILE__) );    
-    wp_enqueue_style( 'noonegridcss', plugins_url( 'assets/css/bootstrap.css', __FILE__));
-    //wp_enqueue_style( 'noonegridtheme', plugins_url( 'assets/css/bootstrap-theme.css', __FILE__));
-    wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
-    wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0'); 
+    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));
+    wp_enqueue_style('noonecss', plugins_url('assets/css/noone.css', __FILE__) );    
+    wp_enqueue_style('noonegridcss', plugins_url( 'assets/css/bootstrap.css', __FILE__));
+    wp_enqueue_style('mCustomScrollbarcss', plugins_url( 'assets/css/jquery.mCustomScrollbar.css', __FILE__));
+	wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
+    wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0');     
 }
-include('noone-searching.php');
 include('noone-searching-grid-pattern.php');
 include('noone-map-searching-grid-pattern.php');
 /**
@@ -946,8 +938,8 @@ function get_noone_meta( $user_id, $size ) {
 }
 
 function noone_gravatar_filter($avatar, $id_or_email, $size, $default, $alt) {
- 
- //allow the user to specify the image size
+	$default=plugins_url('assets/images/UserAvatar.png',__FILE__);
+	//allow the user to specify the image size
     if (!$size){
         $size = 'thumbnail'; // Default image size if not specified.
     }
@@ -975,9 +967,9 @@ function noone_gravatar_filter($avatar, $id_or_email, $size, $default, $alt) {
  
     // return the image thumbnail
     if($image_thumb[0])
-        $return = '<img src="'.$image_thumb[0].'"  alt="'.$alt.'" />';
+        $return = '<img src="'.$image_thumb[0].'"  alt="'.$alt.'" width="50" />';
     else
-         $return = '<img src="'.$default.'" width="'.$size.'" height="'.$size.'" alt="'.$alt.'" />';
+         $return = '<img src="'.$default.'" width="'.$size.'" height="'.$size.'" alt="'.$alt.'" width="50" />';
 
     return $return;
 }

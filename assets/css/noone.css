@@ -1,10 +1,14 @@
 @import url("http://fast.fonts.com/t/1.css?apiType=css&projectid=62e2b403-56df-4551-8dd2-ce142e82b971");
     html{ margin:0 !important; padding:0;}
+    body{
+        overflow-x: hidden; 
+    }
     body, button, input, select, textarea, .searchbox-title{
         font-family: "FrutigerLTW01-45Light",Helvetica,Arial,sans-serif !important ;
+        -webkit-appearance:none !important;
         
     }
-   figure img{ border-radius: 50px;}
+   figure img{/* border-radius: 50px;*/ margin-bottom: 10px;}
     .pages_div{ text-align: center;}
     .pages_div a,.pages_div span{ display: inline-block;
     width: 24px;
@@ -28,15 +32,15 @@
     -ms-transition: all .3s;
     text-decoration: none;
 }
-.icons a.twitter { background: url(../images/social-icons/twitter.png) left top no-repeat; }
+.icons a.twitter { background: url(../images/twitter.png) left top no-repeat; }
  
-.icons a.linkedin { background: url(../images/social-icons/linkedin.png) left top no-repeat; }
-.icons a.facebook { background: url(../images/social-icons/facebook.png) left top no-repeat; }
-.icons a.email { background: url(../images/social-icons/email.png) left top no-repeat; }
-.icons a.googleplus { background: url(../images/social-icons/googleplus.png) left top no-repeat; }
-.icons a.youtube { background: url(../images/social-icons/youtube.png) left top no-repeat; }
-.icons a.google { background: url(../images/social-icons/google.png) left top no-repeat; }
-.icons a:hover { background-position: left -34px; }
+.icons a.linkedin { background: url(../images/linkedin.png) left top no-repeat; }
+.icons a.facebook { background: url(../images/facebook.png) left top no-repeat; }
+.icons a.email { background: url(../images/email.png) left top no-repeat; }
+.icons a.googleplus { background: url(../images/googleplus.png) left top no-repeat; }
+.icons a.youtube { background: url(../images/youtube.png) left top no-repeat; }
+.icons a.google { background: url(../images/google.png) left top no-repeat; }
+.icons a:hover { background-position: left -24px; }
  
  /*#directory-search .dir-searchsubmit {
     background: #ff9c00;
@@ -45,7 +49,24 @@
     -webkit-appearance: button;
     cursor: pointer;
 }*/
-
+#form_fileds{
+    margin-bottom: 10px;
+}
+a.clear_search{
+    padding: 6px 12px !important;
+}
+a.hide_search_div{
+    position: absolute;
+    bottom: -1px;
+    left: -73px;
+    padding: 5px 10px;
+    background: #4e5d6c;
+    color: #fff !important;
+}
+a.hide_search_div:hover{
+    text-decoration: none;
+    color: #fff;
+}
 #directory-search.map-search .wrapper {
     position: relative;
     margin-left: auto;
@@ -82,19 +103,17 @@
     }   
 #directory-search.map-search .searchbox-title {
     color: #ffffff;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     font-size: 16px;
     line-height: 25px;
     font-weight: normal;
 }
+
 #directory-search.map-search input,#directory-search.map-search select {
-/*-webkit-box-sizing: border-box;
--moz-box-sizing: border-box;
-box-sizing: border-box;*/
-display: block;
-margin: 0 0 10px;
+    display: block;
+    margin: 0 0 10px;
 }
-#directory-search input, #directory-search select {
+#directory-search input, #directory-search select, a.clear_search {
     width: 224px;
      height: 30px; 
     padding: 0 12px 0;
@@ -106,16 +125,23 @@ margin: 0 0 10px;
     width: 100%;
      height: 37px;  
 }
+#district_list_ul,#state_list_ul{
+    width: 150px;
+    height:auto;
+    padding: 10px;
+    max-height: 250px;
+    overflow: scroll;
+    border: 1px solid #ccc;
+    position: absolute;
+    top: 20;
+    left: 0;
+    background: #fff;
+}
+.key,.skey{position: relative; background: #fff;}
+#district_list_ul li a, #state_list_ul li a{cursor: pointer;}
  
 
 @media only screen and (max-width: 767px) {
-	/*#directory-search .dir-searchsubmit {
-		background: #ff9c00;
-		border-bottom: 2px solid #b36d00;
-		color: #ffffff;
-		-webkit-appearance: button;
-		cursor: pointer;
-	}*/
 	#directory-search.map-search .wrapper {
 		position: static;
 		margin-left: auto;
@@ -124,32 +150,25 @@ margin: 0 0 10px;
 	#directory-search.map-search #dir-search-form {
 		position: static;
 		right: 0px;
-		bottom: -2px;
-		/*padding: 25px 35px 33px;*/
- 
+		bottom: -2px; 
 	}
 	#directory-search.map-search .searchbox-title {
 		color: #ffffff;
 		font-size: 16px;
-		/*margin-bottom: 24px;*/
 	}
 	#directory-search.map-search input,#directory-search.map-search select {
-		/*-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;*/
-		display: block;
-		/*margin: 0 0 20px;*/
+		display: block;		
 	}
-	#directory-search input, #directory-search select {
+	#directory-search input, #directory-search select, a.clear_search {
 		width: 100%;
 		height: 30px;
-		/*padding: 0 12px 0;*/
 		line-height: 100%;
 	 
 	}
     #directory-search.no-map #dir-search-inputs{
         width: 100%;
         float: left;
+        padding-right: 0px;
     }
     #directory-search.no-map #dir-searchinput-settings{
         width: 100%;
@@ -167,6 +186,9 @@ margin: 0 0 10px;
         border-bottom: 0px !important;
     }
     .search_data{ text-align: center;}
+    .modal{ overflow: auto !important;}
+    .modal-body ul.nav-tabs{ border-bottom: 1px solid rgb(89, 106, 123) !important;}
+    a.hide_search_div{display: none;}
   
 }
 .marker-content img {
@@ -658,15 +680,20 @@ label.error{color: #d9534f;}
 .panel-heading{ cursor: pointer;}
 #state_list_ul{
     z-index: 10;
-        width: 250px;
-        height:auto;
-        padding: 10px;
-        max-height: 250px;
-        overflow: scroll;
-        border: 1px solid #ccc;
-        position: absolute;
-        top: 20;
-        left: 0;
-        background: #fff;
-        }
-        #state_list_ul li a{cursor: pointer;}
+    width: 250px;
+    height:auto;
+    padding: 10px;
+    max-height: 250px;
+    overflow: scroll;
+    border: 1px solid #ccc;
+    position: absolute;
+    top: 20;
+    left: 0;
+    background: #fff;
+}
+#state_list_ul li a{cursor: pointer;}
+.modal_body_wrap{display: none;}
+.modal{ max-height: 590px;}
+body.modal_wrap{ overflow: hidden;position: relative}
+body.modal_wrap .modal_body_wrap{ position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: block;  background-color: #000; opacity: 0.25;}
+.distance_text{ color: #000; margin: 5px 0px;}

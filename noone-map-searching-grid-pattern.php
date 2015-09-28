@@ -6,14 +6,42 @@ function noone_map_searching()
     $paging = new paging;
     $having_qry='';
     $distance_select='';
+    $where_qry ='';
+    $join='';
     # DISTANCE QUERY
+    $order_by='display_name';
     if (isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on')
     {
-        $distance_select=' ,( 3959 * acos( cos( radians('.$_REQUEST['user_lat'].') ) * cos( radians( mt30.meta_value ) ) * cos( radians( mt31.meta_value ) - radians('.$_REQUEST['user_long'].') ) + sin( radians('.$_REQUEST['user_lat'].') ) * sin( radians( mt30.meta_value ) ) ) ) AS distance';
-        $having_qry=' HAVING distance < '.$_REQUEST['geo-radius'];
+        $distance_select=' , p.distance_unit
+                 * DEGREES(ACOS(COS(RADIANS(p.latpoint))
+                 * COS(RADIANS(mt30.meta_value ))
+                 * COS(RADIANS(p.longpoint) - RADIANS(mt31.meta_value))
+                 + SIN(RADIANS(p.latpoint))
+                 * SIN(RADIANS(mt30.meta_value)))) AS distance ';
+        
+        $join= ' JOIN (   
+        SELECT  '.$_REQUEST['user_lat'].'  AS latpoint,  '.$_REQUEST['user_long'].' AS longpoint,
+                '.$_REQUEST['geo-radius'].'.0 AS radius,      111.045 AS distance_unit
+    ) AS p ON 1=1 ';
+
+        $where_qry = '  AND (mt30.meta_value
+     BETWEEN p.latpoint  - (p.radius / p.distance_unit)
+         AND p.latpoint  + (p.radius / p.distance_unit)
+    AND mt31.meta_value
+     BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
+         AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))) ';
+      
+
+        $having_qry=' having distance < '.$_REQUEST['geo-radius'];
+        
+        if(isset($_REQUEST['search_order']) && trim($_REQUEST['search_order']) != ''){
+			
+			$order_by=$_REQUEST['search_order'];
+			
+		}
     }
 
-    $SQL    = "SELECT distinct(".$wpdb->prefix."users.ID) as ID,display_name  ".$distance_select." FROM ".$wpdb->prefix."users";
+    $SQL    = "SELECT distinct(".$wpdb->prefix."users.ID) as ID,display_name  ".$distance_select." FROM ".$wpdb->prefix."users ".$join;
     if (isset($_REQUEST['search_name']) && trim($_REQUEST['search_name']) != '')
     {
         $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta ON (".$wpdb->prefix."users.ID = ".$wpdb->prefix."usermeta.user_id)
@@ -70,7 +98,7 @@ function noone_map_searching()
         $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt30 ON (".$wpdb->prefix."users.ID = mt30.user_id and `mt30`.`meta_key`='perma_lat')";
         $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt31 ON (".$wpdb->prefix."users.ID = mt31.user_id and `mt31`.`meta_key`='perma_long')";
     }
-    $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt2 ON (".$wpdb->prefix."users.ID = mt2.user_id) WHERE 1=1 ";
+    $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt2 ON (".$wpdb->prefix."users.ID = mt2.user_id) WHERE 1=1 ".$where_qry;
 
     // START WHERE CONDITIONS
 
@@ -145,10 +173,8 @@ function noone_map_searching()
         (mt14.meta_key = 'self_title' AND LOWER(CAST(mt14.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%') 
         OR
         (mt15.meta_key = 'self_service' AND LOWER(CAST(mt15.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        )
         OR
         (mt16.meta_key = 'self_info' AND LOWER(CAST(mt16.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        )
         OR
         (mt17.meta_key = 'service_title' AND LOWER(CAST(mt17.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
         OR
@@ -170,15 +196,15 @@ function noone_map_searching()
         ) ";
     }
    $TSQL            = $SQL . " AND
-(mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY display_name ASC ";
+(mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY '.$order_by.' ASC ";
     $t_record        = $wpdb->get_results($TSQL);
     $total_records   = count($t_record);
     $record_per_page = 16;
     $paged = ( get_query_var( 'page' ) ) ? absint( get_query_var( 'page' ) ) : 1;
     $paging->assign(get_permalink().'?search_name='.$_REQUEST['search_name'].'&search_city='.$_REQUEST['search_city'].'&search_state='.$_REQUEST['search_state'].'&search_sector='.$_REQUEST['search_sector'].'&search_occp_type='.$_REQUEST['search_occp_type'].'&search_occp_city='.$_REQUEST['search_occp_city'].'&search_occp_state='.$_REQUEST['search_occp_state'].'&search_btn='.$_REQUEST['search_btn'].'&dir-search='.$_REQUEST['dir-search'].'', $total_records, $record_per_page,$paged);
     $sql_limit = $paging->sql_limit();
-    $SQL .= " AND 
-(mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY display_name ASC LIMIT " . $sql_limit;
+   $SQL .= " AND 
+(mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY ".$order_by." ASC LIMIT " . $sql_limit; 
     $fivesdrafts = $wpdb->get_results($SQL);
     
 ?>
@@ -193,8 +219,9 @@ function noone_map_searching()
 							  >
 						      <input type="hidden" name="user_lat" value="<?php echo $_REQUEST['user_lat'];?>" id="user_lat">
                               <input type="hidden" id="user_long" value="<?php echo $_REQUEST['user_long'];?>" name="user_long">
-							<p class="searchbox-title">Search By Person</p>
-							<div id="dir-search-inputs">
+							<div id="form_fileds" class="mCustomScrollbar">
+								<p class="searchbox-title">Search By Person</p>
+								<div id="dir-search-inputs">
 								<div id="dir-holder">
 									<div class="dir-holder-wrap">
 										<input type="text" name="search_name" placeholder="Full Name" 
@@ -212,37 +239,37 @@ function noone_map_searching()
 									</div>
 								</div>
 							</div>
-							<div class="dir-searchinput-settings" id="dir-searchinput-settings">
+								<div class="dir-searchinput-settings" id="dir-searchinput-settings">
 										<div id="dir-search-advanced">
 											<div class="searchbox-title text">Search by Profession</div>
 
 											<div class="search-slider-geo">
 												<select name="search_sector" class="form-control">
-                <option value="" <?php
-    selected($_REQUEST['search_sector'], '');
-?>>-- Job Sector --</option>
-                <option value="govt" <?php
-    selected($_REQUEST['search_sector'], 'govt');
-?>>Government</option>
-                <option value="private" <?php
-    selected($_REQUEST['search_sector'], 'private');
-?>>Private</option>
-            </select>
-             <input type="text" name="search_occp_type" class="form-control" placeholder="Job Post or Info" value="<?php
-    echo $_REQUEST['search_occp_type'];
-?>" /> 
+													<option value="" <?php
+										selected($_REQUEST['search_sector'], '');
+									?>>-- Job Sector --</option>
+													<option value="govt" <?php
+										selected($_REQUEST['search_sector'], 'govt');
+									?>>Government</option>
+													<option value="private" <?php
+										selected($_REQUEST['search_sector'], 'private');
+									?>>Private</option>
+												</select>
+												 <input type="text" name="search_occp_type" class="form-control" placeholder="Job Post or Info" value="<?php
+										echo $_REQUEST['search_occp_type'];
+									?>" /> 
 
-            <input type="text" name="search_occp_city" class="form-control" placeholder="Job City" value="<?php
-    echo $_REQUEST['search_occp_city'];
-?>" /> 
+												<input type="text" name="search_occp_city" class="form-control" placeholder="Job City" value="<?php
+										echo $_REQUEST['search_occp_city'];
+									?>" /> 
 
-            <input type="text" name="search_occp_state" class="form-control" placeholder="Job State" value="<?php
-    echo $_REQUEST['search_occp_state'];
-?>" /> 
+												<input type="text" name="search_occp_state" class="form-control" placeholder="Job State" value="<?php
+										echo $_REQUEST['search_occp_state'];
+									?>" /> 
 											</div>
 										</div>
 									</div> 
-                                    <div class="dir-searchinput-settings" id="dir-searchinput-settings-position">
+								<div class="dir-searchinput-settings" id="dir-searchinput-settings-position">
                                         <div id="dir-search-advanced">
                                             <div class="searchbox-title text">Search around my position</div>
 
@@ -270,13 +297,33 @@ function noone_map_searching()
                                             </div>
                                         </div>
                                     </div>
-                                    
+								<div class="dir-searchinput-settings" id="dir-searchinput-settings">
+								
+										<div id="dir-search-advanced">
+											<div class="searchbox-title order-by-text text">Show results in order by</div>
+
+											<div class="search-slider-geo">
+												<select name="search_order" class="form-control" id="search_order">
+                 
+													<option value="display_name" <?php
+										selected($_REQUEST['search_order'], 'display_name');
+									?>>Name</option>
+													<option disabled="disabled" value="distance" <?php
+										selected($_REQUEST['search_order'], 'distance');
+									?>>Distance</option>
+												</select>
+             
+  
+											</div>
+										</div>
+									</div>  
+							</div>
 							<div id="dir-search-button">
 							 
 								<input type="submit" class="btn btn-primary" value="Search" name="search_btn" id="dir-searchsubmit">
+								<a class="btn btn-primary clear_search" id="clear_search">Clear Search</a>
+								<a href="javascript:void(0);" class="hide_search_div">Hide it &raquo;</a>
 							</div>
-							<input type="hidden" value="yes" name="dir-search">
-							
 						</form>
 					</div>
 					</div>
@@ -286,25 +333,66 @@ function noone_map_searching()
     <script type="text/javascript">
 		
 		jQuery(document).ready(function(){
+			jQuery(".hide_search_div").on("click",function(){
+				 
+				if(jQuery("#dir-search-form").css('right') == '0px'){
+					jQuery("#dir-search-form").animate({right: '-294px'},'slow',function(){
+						jQuery(".hide_search_div").html("&laquo; Show it");
+					});
+				}
+				else{
+					jQuery("#dir-search-form").animate({right: '0'},'slow',function(){
+						jQuery(".hide_search_div").html("Hide it &raquo;");
+					});
+				}
+			});
+			
+			jQuery(".clear_search").click(function(){
+			window.location.href='<?php echo get_permalink();?>';
+			});
 			var map_height = jQuery( window ).height();
+			var _window = jQuery(window).width();
+			if(_window > 767){
+				jQuery("#form_fileds").mCustomScrollbar({
+					setHeight:eval(map_height-140),
+					theme:"dark-3"
+				});	
+			}					
 			jQuery("#mapnew").css("height",(map_height-20));
 			
             jQuery( "#geo-slider" ).slider({
                 range: "max",
-                min: 0,
-                max: 100,
+                min: 10,
+                max: 500,
                 value: <?php echo (isset($_REQUEST['geo-radius']) ? $_REQUEST['geo-radius'] : 10)?>,
                 slide: function( event, ui ) {
                     jQuery( "#dir-searchinput-geo-radius" ).val( ui.value );
+                    jQuery.goMap.removeOverlay('circle', 'riga');
+                    var dlat = jQuery("#user_lat").val( ) ;
+                    var dlong = jQuery("#user_long").val() ;
+                    jQuery.goMap.createCircle({
+                        id: 'riga',
+                        latitude: dlat,
+                        longitude: dlong,
+                        radius: (ui.value * 1000)
+                    });
+                    
                 }
 
-            });
+            }).on( "slidestop", function( event, ui ) {
+				jQuery(".form-horizontal").submit();
+			} );
+                
             jQuery( "#dir-searchinput-geo-radius" ).val( jQuery( "#geo-slider" ).slider( "value" ) );
 		});
     jQuery(function() { 
+		var dlat = jQuery("#user_lat").val( ) ;
+        var dlong = jQuery("#user_long").val() ;
         jQuery("#mapnew").goMap({
 			maptype: 'ROADMAP',
-            zoom:10,
+			latitude: dlat, 
+			longitude: dlong,
+            zoom:<?php echo (isset($_REQUEST['geo-radius']) ? 5 : 10)?>,
             markers: [
             <?php
         $i = 0;
@@ -324,7 +412,7 @@ function noone_map_searching()
                         longitude: " . $author_info->perma_long . ", 
                         id: 'map_" . $i . "', 
                         icon: '".$icon."',
-						html: { content: '<div class=\"row\" style=\"width:220px;\"><div class=\"col-xs-12 text-center\"><img src=\"".get_noone_meta($author_info->ID,'gomap_marker_html')."\" ></div class=\"col-xs-12 text-center\">&nbsp;<div></div><div class=\"col-xs-12 text-center\"><a href=\"javascript:void(0);\" onClick=\"javascript:info_show(\'".$author_info->first_name." ".$author_info->last_name."\',".$author_info->ID.",450,800);\" class=\"btn btn-primary btn-sm\">VIEW MORE</a></div></div>'}
+						html: { content: '<div class=\"row\"><div class=\"col-xs-5\"><img src=\"".get_noone_meta($author_info->ID,'gomap_marker_html')."\" ></div><div class=\"col-xs-7\">".$author_info->first_name."<br/>".round($author->distance,2)." Km from you<br/><a href=\"javascript:void(0);\" onClick=\"javascript:info_show(\'".$author_info->first_name." ".$author_info->last_name."\',".$author_info->ID.",450,800);\" class=\"btn btn-primary btn-sm\">VIEW MORE</a></div></div>'}
                         }";
             } 
         } 
@@ -336,7 +424,47 @@ function noone_map_searching()
 ?>
            ] 
         }); 
-
+<?php if(isset($_REQUEST['geo-radius']) && trim($_REQUEST['geo-radius'])!='' && isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on'){?>
+					var dist = jQuery( "#dir-searchinput-geo-radius" ).val();
+					
+					//jQuery.goMap.removeOverlay('circle', 'riga');
+                    var dlat = jQuery("#user_lat").val( ) ;
+                    var dlong = jQuery("#user_long").val() ;
+                    
+                    jQuery.goMap.createMarker({
+						latitude: dlat,
+						longitude: dlong,
+						id: 'position_marker', 
+						title: 'You are here.',
+						draggable: true,
+						icon: '<?php echo plugins_url('assets/images/marker-person.png',__FILE__);?>',
+						html: { content: 'You are here.'}
+					});
+					jQuery.goMap.createListener({type:'marker', marker:'position_marker'}, 'dragend', function() { 
+						jQuery.goMap.removeOverlay('circle', 'riga');
+						jQuery("#user_lat").val(this.getPosition().lat()) ;
+						jQuery("#user_long").val(this.getPosition().lng()) ; 
+						var radius_val = jQuery("#dir-searchinput-geo-radius").val();
+						jQuery.goMap.createCircle({
+							id: 'riga',
+							latitude: this.getPosition().lat(),
+							longitude: this.getPosition().lng(),
+							radius: (radius_val * 1000)
+						});
+						jQuery(".form-horizontal").submit();
+					});
+					
+                    jQuery.goMap.createCircle({
+                        id: 'riga',
+                        latitude: dlat,
+                        longitude: dlong,
+                        radius: (dist * 1000)
+                    });
+                    
+                    
+				
+    
+             <?php }?> 
 
 }); 
 
@@ -350,6 +478,7 @@ if ($fivesdrafts)
         ?>
     <div class="container">
         <div class="row search_data" style="margin-top:20px;">
+            <div class="col-sm-12">Total recored found: <?php echo $total_records;?> </div>
         <div class="col-sm-2">You are searching: </div>
         <div class="col-sm-10">
             <?php if (isset($_REQUEST['search_name']) && trim($_REQUEST['search_name']) != '')
@@ -389,20 +518,50 @@ if ($fivesdrafts)
 				<div class="row"><input type="button" class="gmap_button btn btn-primary btn-block" style="margin-top:10px;" id="map_but_<?php echo $i;?>" value="View on Map"></div>
 				<script type="text/javascript">
 				jQuery(function(){
+					
+					 
+	
+	
 				 jQuery("#map_but_<?php
 					echo $i;
 	?>").click(function(){  
+		
+				 
 						jQuery.goMap.setMap({latitude:'<?php
-					echo $author_info->perma_lat;?>', longitude:'<?php
-					echo $author_info->perma_long;?>'
+							echo $author_info->perma_lat;?>', longitude:'<?php
+							echo $author_info->perma_long;?>'
 
-	}); 
+						}); 
 						jQuery.goMap.setMap({zoom: 7});
 						google.maps.event.trigger(jQuery(jQuery.goMap.mapId).data('map_<?php
 					echo $i;
 	?>'), 'click'); 
 	jQuery( window ).scrollTop(0);
-					}); 
+	
+					
+					var ulat = jQuery("#user_lat").val() ;
+					var ulong = jQuery("#user_long").val() ;	
+					if(ulat!='' && ulong!=''){
+						jQuery.goMap.removeOverlay('polyline','poly_linee');
+						jQuery.goMap.createPolyline({
+							color: "#00CC00",
+							id: "poly_linee",
+							opacity: 0.5,
+							weight:	4,
+							coords:	[{
+									latitude: '<?php
+								echo $author_info->perma_lat;?>',
+									longitude: '<?php
+								echo $author_info->perma_long;?>'
+								} ,{ 
+									latitude: ulat,
+									longitude: ulong
+							}]
+						});
+					}
+					});
+					
+					 
 				});
 				</script>
             <?php
@@ -423,21 +582,26 @@ if ($fivesdrafts)
         		
             </div>
               </div>
-         
-                
+				<?php if (isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on')
+						{
+							if(isset($_REQUEST['search_order']) && trim($_REQUEST['search_order']) == 'distance'){
+								echo "[ ".round($author->distance,2)." Km from you ]";
+							}
+						}
+				?>
             </li>
         <?php
         } //$fivesdrafts as $author
        ?>
         </ul> <div class="modal">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onClick="javascript:info_remove();">×</button>
-        <h4 class="modal-title">Modal title</h4>
+        <h4 class="modal-title">Loading Title</h4>
       </div>
       <div class="modal-body">
-        <p>One fine body…</p>
+        <p>Loading Information…</p>
       </div>
        
     </div>
@@ -458,7 +622,11 @@ if ($fivesdrafts)
     else
     {
 ?>
-   <h2>Apologies, but no results were found for the request.</h2>
+   <div class="container">
+        <div class="row search_data" style="margin-top:20px;">
+			<div class="col-sm-12">Apologies, but no results were found for the request. </div>
+		</div> 
+	</div>
     <?php
     }
     ?>
