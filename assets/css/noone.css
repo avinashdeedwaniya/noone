@@ -42,23 +42,28 @@
 .icons a.google { background: url(../images/google.png) left top no-repeat; }
 .icons a:hover { background-position: left -24px; }
  
- /*#directory-search .dir-searchsubmit {
+ /*#map-search-form .dir-searchsubmit {
     background: #ff9c00;
     border-bottom: 2px solid #b36d00;
     color: #ffffff;
     -webkit-appearance: button;
     cursor: pointer;
 }*/
+/*==============================================
+                USER SEARCH FORM
+===============================================*/
+
+
 #form_fileds{
     margin-bottom: 10px;
 }
 a.clear_search{
-    padding: 6px 12px !important;
+    padding: 8px 12px !important;
 }
 a.hide_search_div{
     position: absolute;
-    bottom: -1px;
-    left: -73px;
+    bottom: 0px;
+    left: -93px;
     padding: 5px 10px;
     background: #4e5d6c;
     color: #fff !important;
@@ -67,63 +72,24 @@ a.hide_search_div:hover{
     text-decoration: none;
     color: #fff;
 }
-#directory-search.map-search .wrapper {
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-}
-
- 
-
-#directory-search.map-search #dir-search-form {
+#map-search-form{
+    background: #4e5d6c;
     position: absolute;
-    right: 0px;
-    bottom: 0px;
-    margin-bottom: 0px !important;
-   /* padding: 10px 35px 15px;*/
-
-}
-#directory-search.no-map #dir-search-form {
-    position: unset;
+    top: 0;
     right: 0;
-    bottom: 0;
-    float: none;
-    margin: auto !important;
-    max-width: 1170px;
-   /* padding: 10px 35px 15px;*/
+    padding: 15px;
 }
- #directory-search.no-map #dir-search-inputs{
-    padding-right:10px; 
-    width: 50%;
-    float: left;
-    }
- #directory-search.no-map #dir-searchinput-settings{
-        width: 50%;
-        float: right;
-    }   
-#directory-search.map-search .searchbox-title {
-    color: #ffffff;
-    margin-bottom: 8px;
-    font-size: 16px;
-    line-height: 25px;
-    font-weight: normal;
+#map-search-form input, #map-search-form select{
+    margin-bottom: 10px;
 }
-
-#directory-search.map-search input,#directory-search.map-search select {
-    display: block;
-    margin: 0 0 10px;
+#map-search-form input[type=submit]{
+    margin-bottom: 0px;
 }
-#directory-search input, #directory-search select, a.clear_search {
-    width: 224px;
-     height: 30px; 
-    padding: 0 12px 0;
-     line-height: 100%; 
-    
+.metric{
+    color: rgb(43, 62, 80);
 }
-
-#directory-search.no-map input, #directory-search.no-map select {
-    width: 100%;
-     height: 37px;  
+.geo-loc{
+    position: relative;
 }
 #district_list_ul,#state_list_ul{
     width: 150px;
@@ -142,41 +108,45 @@ a.hide_search_div:hover{
  
 
 @media only screen and (max-width: 767px) {
-	#directory-search.map-search .wrapper {
-		position: static;
-		margin-left: auto;
-		margin-right: auto;
-	}
-	#directory-search.map-search #dir-search-form {
-		position: static;
-		right: 0px;
-		bottom: -2px; 
-	}
-	#directory-search.map-search .searchbox-title {
+	 
+	#map-search-form{
+        position: relative;
+    }
+    #map-search-form input[type=submit]{
+        margin-bottom: 10px;
+    }
+     
+	#map-search-form .searchbox-title {
 		color: #ffffff;
 		font-size: 16px;
 	}
-	#directory-search.map-search input,#directory-search.map-search select {
+	#map-search-form input,#map-search-form select {
 		display: block;		
 	}
-	#directory-search input, #directory-search select, a.clear_search {
+	#map-search-form input, #map-search-form select, a.clear_search {
 		width: 100%;
-		height: 30px;
+		height: 40px;
 		line-height: 100%;
 	 
 	}
-    #directory-search.no-map #dir-search-inputs{
+    a.clear_search{
+        padding: 12px !important;
+    }
+    #map-search-form.no-map #dir-search-inputs{
         width: 100%;
         float: left;
         padding-right: 0px;
     }
-    #directory-search.no-map #dir-searchinput-settings{
+    #map-search-form.no-map #dir-searchinput-settings{
         width: 100%;
         float: right;
     }
-    #directory-search.no-map input, #directory-search.no-map select {
+    #map-search-form.no-map input, #map-search-form.no-map select {
         width: 100%;
         height: 37px;  
+    }
+    #dir-searchinput-settings-position .text-geo-radius .metric{
+        line-height: 39px;
     }
     .nav-tabs > li{
         margin-bottom: 2px !important;
@@ -189,6 +159,9 @@ a.hide_search_div:hover{
     .modal{ overflow: auto !important;}
     .modal-body ul.nav-tabs{ border-bottom: 1px solid rgb(89, 106, 123) !important;}
     a.hide_search_div{display: none;}
+    .ui-slider.ui-slider-horizontal.ui-widget.ui-widget-content.ui-corner-all{
+        width: 90%;
+    }
   
 }
 .marker-content img {
@@ -208,52 +181,7 @@ font-family: "ralewayregular";
 font-size: 14px;
 font-weight: bold;
 }
-/*.map-item-info .address {
-border-bottom: 1px dotted #cccccc;
-margin-bottom: 15px;
-padding-bottom: 5px;
-font-size: 12px;
-line-height: 18px;
-}
-.map-item-info .more-button {
-cursor: pointer;
-display: inline-block;
-padding: 5px 10px 4px;
-font-size: 12px;
-line-height: 18px;
-text-decoration: none;
-color: #ffffff;
-font-weight: bold;
-text-align: center;
-background: #9bd8d7;
-border-bottom: 3px solid #52bbba;
--webkit-border-radius: 8px;
--moz-border-radius: 8px;
-border-radius: 8px;
-}
-.marker-content .arrow {
-bottom: -32px;
-left: 78px;
-height: 27px;
-position: absolute;
-width: 37px;
-background: url('http://preview.ait-themes.com/businessfinder/wp1/wp-content/themes/businessfinder/design/img/map-pin-description.png') no-repeat;
-}
- */
- /* #close-this{float: right;clear: both; width:80px; height:auto; padding: 3px 5px; text-align: center; color: #ffffff!important; background: #38A8E0;position: absolute;top: 0; right: 0;}*/
-  /*#user_content {border-top: 2px solid #3d3d3d; padding: 10px; background-color: #fff;}
-  #user_content .user-avatar/*{ width: 150px; float: left; margin:10px 20px 0 10px;*/}
-   
- /* .user_basic_info h2, .user_basic_info .user_email, .user_basic_info .social_media {width: 100%; margin:0 0 10px 0;}
-  #user_content p {clear: both; margin-top: 20px; float: left; margin-bottom: 10px;}
-  form#send_message input[type=text], form#send_message textarea{border: 1px solid #3d3d3d; color: #000000;font-size: 13px;margin-bottom: 5px; }
-  
-  form#send_message input:focus, form#send_message textarea:focus{border:2px solid #3d3d3d;}
-   
-.bottom_social_communication{padding: 10px; background: #000; color: #ffffff;}
-.bottom_social_communication p{ font-weight: bold;   margin: 0px;}
-.contact_address_block {width: 100%;}
-.contact_address_block h2{ margin: 0 0 5px 0; font-size: 18px;} */
+ 
 	
         body{ position:relative;}
         .TB_window{position: absolute; z-index:100051;}
@@ -299,7 +227,7 @@ background: url('http://preview.ait-themes.com/businessfinder/wp1/wp-content/the
     margin: 0 0 21px;
 }
 
-#directory-search .geo-button {
+#map-search-form .geo-button {
     display: block;
     float: left;
     height: 30px;
@@ -654,7 +582,7 @@ ul.ul_user > li{
 }
 .ui-slider.ui-slider-horizontal.ui-widget.ui-widget-content.ui-corner-all{
     float: right;
-    width: 85%;
+    width: 84%;
     margin-top: 8px;
 }
 /*.nav-tabs > li > a {  

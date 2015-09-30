@@ -1,9 +1,11 @@
-jQuery(document).ready(function() {
-    function sgetval(id, value) {
+function sgetval(id, value) {
         jQuery('#' + id).parents(".skey").siblings('.state').val(value)
         jQuery('.skey').html('');
     }
-
+jQuery(document).ready(function() {
+	 var _window = jQuery(window).width();
+	 var _wHeight = jQuery(window).height();
+	
     function getLocation() {
         if (navigator.geolocation) {
             jQuery("#geo-slider").slider("enable");
@@ -110,22 +112,54 @@ jQuery(document).ready(function() {
             this_div.siblings(".skey").html(response);
         });
     });
-
-    var map_height = jQuery(window).height();
-    jQuery("#mapnew").css("height", (map_height - 20));
+	
+	function set_map_searchbar_height(){
+		var _window = jQuery(window).width();
+		var _wHeight = jQuery(window).height();
+		var _mapSearchHeight = jQuery("#map-search-form").outerHeight(true);
+		jQuery("#mapnew").css("height", (_wHeight - 20));		 
+		if(_window > 767){			
+			
+			if(jQuery("#mapnew").height() < _mapSearchHeight){
+				 console.log("map="+jQuery("#mapnew").height()+' window='+_wHeight+' search='+_mapSearchHeight);
+				jQuery("#map-search-form").css("top", '0px');
+				jQuery("#map-search-form").css("height", (_wHeight - 30));
+				jQuery("#map-search-form").mCustomScrollbar({
+					setHeight:eval(_wHeight),
+					theme:"dark-3"
+				});	
+			}
+			else{
+				console.log("map="+jQuery("#mapnew").height()+' window='+_wHeight+' search='+_mapSearchHeight);
+				jQuery("#map-search-form").css("height", 'auto');
+				jQuery("#map-search-form").css("top", (jQuery("#mapnew").height() - (_mapSearchHeight-10)));
+				jQuery("#map-search-form").mCustomScrollbar("destroy")
+			}
+		}
+		else{
+			jQuery("#map-search-form").css("height", 'auto');
+			jQuery("#map-search-form").css("top", '0px');
+		}
+	}
+	 
     setTimeout(function() {
-        equalizer()
+        equalizer();
+        set_map_searchbar_height();
     }, 3000);
 
     jQuery(window).resize(function() {
         setTimeout(function() {
-            equalizer()
+            equalizer();
+            set_map_searchbar_height();
         }, 3000);
+
     });
     jQuery(window).on("orientationchange", function(event) {
         setTimeout(function() {
-            equalizer()
+            equalizer();
+            set_map_searchbar_height();
         }, 3000);
+
     });
     jQuery("ul.pagination li").removeClass("active");
     jQuery("ul.pagination li span").each(function() {
@@ -135,7 +169,9 @@ jQuery(document).ready(function() {
 
     });
 
-    function equalizer() {
+    
+});
+function equalizer() {
         var highestBox = 0;
         jQuery('.user_block').each(function() {
             jQuery(this).css("height", "");
@@ -173,4 +209,3 @@ jQuery(document).ready(function() {
         jQuery(".modal-body").html('');
         jQuery("body").removeClass("modal_wrap");
     }
-});

@@ -32,12 +32,12 @@ if (isset($_REQUEST['search_name']) && trim($_REQUEST['search_name']) != '')
 		
 		if(count($name_arr) > 1){
 		$args['meta_query'][]=array(
-			'relation' => 'AND',			
+			'relation' => 'OR',			
 			array(
 				'key'     => 'first_name',
 				'value'   => $name_arr[0],
 				'compare' => 'LIKE'
-			)/*,
+			),
 			array(
 				'key'     => 'last_name',
 				'value'   => $name_arr[0],
@@ -47,7 +47,7 @@ if (isset($_REQUEST['search_name']) && trim($_REQUEST['search_name']) != '')
 				'key'     => 'first_name',
 				'value'   => end($name_arr),
 				'compare' => 'LIKE'
-			)*/,
+			),
 			array(
 				'key'     => 'last_name',
 				'value'   => end($name_arr),
@@ -263,7 +263,7 @@ $authors = $wp_user_query->get_results();
 								</div>
 								<div class="dir-searchinput-settings"  id="dir-searchinput-settings">
 											<div id="dir-search-advanced">
-												<div class="searchbox-title text">Search by Profession</div>
+												<p class="searchbox-title text">Search by Profession</p>
 
 												<div class="search-slider-geo">
 													<select name="search_sector" class="form-control">

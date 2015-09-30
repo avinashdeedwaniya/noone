@@ -199,7 +199,7 @@ function noone_map_searching()
 (mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY '.$order_by.' ASC ";
     $t_record        = $wpdb->get_results($TSQL);
     $total_records   = count($t_record);
-    $record_per_page = 16;
+    $record_per_page = 2;
     $paged = ( get_query_var( 'page' ) ) ? absint( get_query_var( 'page' ) ) : 1;
     $paging->assign(get_permalink().'?search_name='.$_REQUEST['search_name'].'&search_city='.$_REQUEST['search_city'].'&search_state='.$_REQUEST['search_state'].'&search_sector='.$_REQUEST['search_sector'].'&search_occp_type='.$_REQUEST['search_occp_type'].'&search_occp_city='.$_REQUEST['search_occp_city'].'&search_occp_state='.$_REQUEST['search_occp_state'].'&search_btn='.$_REQUEST['search_btn'].'&dir-search='.$_REQUEST['dir-search'].'', $total_records, $record_per_page,$paged);
     $sql_limit = $paging->sql_limit();
@@ -211,155 +211,114 @@ function noone_map_searching()
 <div class="author-entry">
     <script src="<?php echo plugins_url('assets/js/jquery.validate.js', __FILE__)?>"></script> 
 
-   <div id="mapnew" style="width:100%; clear:both;" ></div> 
-   <div data-interactive="yes" class="map-search" id="directory-search">
-					<div class="wrapper">
-						<div class="dir-searchform well" id="dir-search-form">
-							<form class="form-horizontal"  method="get" action="<?php echo get_permalink();?>"
-							  >
-						      <input type="hidden" name="user_lat" value="<?php echo $_REQUEST['user_lat'];?>" id="user_lat">
-                              <input type="hidden" id="user_long" value="<?php echo $_REQUEST['user_long'];?>" name="user_long">
-							<div id="form_fileds" class="mCustomScrollbar">
-								<p class="searchbox-title">Search By Person</p>
-								<div id="dir-search-inputs">
-								<div id="dir-holder">
-									<div class="dir-holder-wrap">
-										<input type="text" name="search_name" placeholder="Full Name" 
-										id="search_name"  class="dir-searchinput form-control" value="<?php echo $_REQUEST['search_name'];?>" />
-									 
-
-									 <input type="text" placeholder="City" id="search_city" 
-									class="ui-autocomplete-input form-control"   name="search_city" value="<?php
-    echo $_REQUEST['search_city'];
-?>" />
-									<input type="text" class="ui-autocomplete-input state form-control" placeholder="State" autocomplete="off" id="search_state" name="search_state" value="<?php
-    echo $_REQUEST['search_state'];
-?>" /> <div class="skey"></div>
-
-									</div>
+	<div id="mapnew" style="width:100%; clear:both;" ></div> 
+	<div id="map-search-form">
+		<form class="form-horizontal"  method="get" action="<?php  echo get_permalink(); ?>">
+			  <input type="hidden" name="user_lat" value="<?php  echo $_REQUEST['user_lat']; ?>" id="user_lat">
+			  <input type="hidden" id="user_long" value="<?php  echo $_REQUEST['user_long']; ?>" name="user_long">
+			<div id="form_fileds" class="mCustomScrollbar">
+				<p class="searchbox-title">Search By Person</p>
+				  
+						<input type="text" name="search_name" placeholder="Full Name" 
+						id="search_name"  class="dir-searchinput form-control" value="<?php  echo $_REQUEST['search_name']; ?>" />
+					 
+					 <input type="text" placeholder="City" id="search_city" 
+					class="ui-autocomplete-input form-control"   name="search_city" value="<?php
+						echo $_REQUEST['search_city']; ?>" /> 
+					 
+					<input type="text" class="ui-autocomplete-input state form-control" placeholder="State" autocomplete="off" id="search_state" name="search_state" value="<?php
+						echo $_REQUEST['search_state']; ?>" /> 
+					<div class="skey"></div>
+					 
+					<div class="dir-searchinput-settings" id="dir-searchinput-settings">
+						<p class="searchbox-title text">Search by Profession</p>
+						 
+							<select name="search_sector" class="form-control">
+								<option value="" <?php
+									selected($_REQUEST['search_sector'], ''); ?>>-- Job Sector --</option>
+								<option value="govt" <?php
+									selected($_REQUEST['search_sector'], 'govt'); ?>>Government</option>
+								<option value="private" <?php
+									selected($_REQUEST['search_sector'], 'private'); ?>>Private</option>
+							</select>
+						 
+							<input type="text" name="search_occp_type" class="form-control" placeholder="Job Post or Info" value="<?php
+							echo $_REQUEST['search_occp_type']; ?>" />
+						 
+							<input type="text" name="search_occp_city" class="form-control" placeholder="Job City" value="<?php
+								echo $_REQUEST['search_occp_city']; ?>" /> 
+						 
+							<input type="text" name="search_occp_state" class="form-control" placeholder="Job State" value="<?php
+							echo $_REQUEST['search_occp_state']; ?>" /> 
+						 
+					</div>
+					<div class="dir-searchinput-settings" id="dir-searchinput-settings-position">
+						<div id="dir-search-advanced">
+							<p class="searchbox-title text">Search around my position</p>
+							<div class="geo-loc" >
+							<div class="search-slider-geo">
+								<div class="geo-button">
+									<?php
+										echo $_REQUEST['geo'];if($_REQUEST['geo']=='on'){ ?>
+									<input type="checkbox" checked="checked" id="dir-searchinput-geo" name="geo" class="hidden">
+									<div class="iphone-style" rel="dir-searchinput-geo">&nbsp;</div>
+									<?php  } else { ?>
+										<input type="checkbox"   id="dir-searchinput-geo" name="geo" class="hidden">
+									<div class="iphone-style off" rel="dir-searchinput-geo">&nbsp;</div>
+										<?php
+											} ?>
+								</div>
+								<div id="geo-slider"></div>
+								<div class="text-geo-radius clear">
+									<input type="hidden" value="<?php  echo $_REQUEST['geo-radius']; ?>" id="dir-searchinput-geo-radius" name="geo-radius">
+									<div class="metric">10 km</div>
 								</div>
 							</div>
-								<div class="dir-searchinput-settings" id="dir-searchinput-settings">
-										<div id="dir-search-advanced">
-											<div class="searchbox-title text">Search by Profession</div>
-
-											<div class="search-slider-geo">
-												<select name="search_sector" class="form-control">
-													<option value="" <?php
-										selected($_REQUEST['search_sector'], '');
-									?>>-- Job Sector --</option>
-													<option value="govt" <?php
-										selected($_REQUEST['search_sector'], 'govt');
-									?>>Government</option>
-													<option value="private" <?php
-										selected($_REQUEST['search_sector'], 'private');
-									?>>Private</option>
-												</select>
-												 <input type="text" name="search_occp_type" class="form-control" placeholder="Job Post or Info" value="<?php
-										echo $_REQUEST['search_occp_type'];
-									?>" /> 
-
-												<input type="text" name="search_occp_city" class="form-control" placeholder="Job City" value="<?php
-										echo $_REQUEST['search_occp_city'];
-									?>" /> 
-
-												<input type="text" name="search_occp_state" class="form-control" placeholder="Job State" value="<?php
-										echo $_REQUEST['search_occp_state'];
-									?>" /> 
-											</div>
-										</div>
-									</div> 
-								<div class="dir-searchinput-settings" id="dir-searchinput-settings-position">
-                                        <div id="dir-search-advanced">
-                                            <div class="searchbox-title text">Search around my position</div>
-
-                                            <div class="search-slider-geo">
-                                                <div class="geo-button">
-                                                    <?php
-                                                    echo $_REQUEST['geo'];
-                                                    if($_REQUEST['geo']=='on'){
-                                                    ?>
-                                                    <input type="checkbox" checked="checked" id="dir-searchinput-geo" name="geo" class="hidden">
-                                                    <div class="iphone-style" rel="dir-searchinput-geo">&nbsp;</div>
-                                                    <?php }else{
-                                                        ?>
-                                                        <input type="checkbox"   id="dir-searchinput-geo" name="geo" class="hidden">
-                                                    <div class="iphone-style off" rel="dir-searchinput-geo">&nbsp;</div>
-                                                        <?php
-                                                    } ?>
-                                                </div>
-
-                                                <div id="geo-slider"></div>
-                                                <div class="text-geo-radius clear">
-                                                    <input type="text" value="<?php echo $_REQUEST['geo-radius'];?>" id="dir-searchinput-geo-radius" name="geo-radius">
-                                                    <div class="metric">km</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-								<div class="dir-searchinput-settings" id="dir-searchinput-settings">
-								
-										<div id="dir-search-advanced">
-											<div class="searchbox-title order-by-text text">Show results in order by</div>
-
-											<div class="search-slider-geo">
-												<select name="search_order" class="form-control" id="search_order">
-                 
-													<option value="display_name" <?php
-										selected($_REQUEST['search_order'], 'display_name');
-									?>>Name</option>
-													<option disabled="disabled" value="distance" <?php
-										selected($_REQUEST['search_order'], 'distance');
-									?>>Distance</option>
-												</select>
-             
-  
-											</div>
-										</div>
-									</div>  
-							</div>
-							<div id="dir-search-button">
+						</div>
+						</div>
+						</div>
+					<div class="dir-searchinput-settings" id="dir-searchinput-settings">
+						<div id="dir-search-advanced">
+							<div class="searchbox-title order-by-text text">Show results in order by</div>
 							 
-								<input type="submit" class="btn btn-primary" value="Search" name="search_btn" id="dir-searchsubmit">
-								<a class="btn btn-primary clear_search" id="clear_search">Clear Search</a>
-								<a href="javascript:void(0);" class="hide_search_div">Hide it &raquo;</a>
-							</div>
-						</form>
-					</div>
-					</div>
-				</div> 
- 				
+								<select name="search_order" class="form-control" id="search_order">
+									<option value="display_name" <?php
+										selected($_REQUEST['search_order'], 'display_name'); ?>>Name</option>
+									<option disabled="disabled" value="distance" <?php
+										selected($_REQUEST['search_order'], 'distance'); ?>>Distance</option>
+								</select>
+							 
+						</div>
+					</div>  
+			</div>
+			<div id="dir-search-button">
+				<input type="submit" class="btn btn-primary" value="Search" name="search_btn" id="dir-searchsubmit">
+				<a class="btn btn-primary clear_search" id="clear_search">Clear Search</a>
+				<a href="javascript:void(0);" class="hide_search_div">Hide filter &raquo;</a>
+			</div>
+			</form>
+	</div>			
  
     <script type="text/javascript">
 		
 		jQuery(document).ready(function(){
 			jQuery(".hide_search_div").on("click",function(){
 				 
-				if(jQuery("#dir-search-form").css('right') == '0px'){
-					jQuery("#dir-search-form").animate({right: '-294px'},'slow',function(){
-						jQuery(".hide_search_div").html("&laquo; Show it");
+				if(jQuery("#map-search-form").css('right') == '0px'){
+					jQuery("#map-search-form").animate({right: '-284px'},'slow',function(){
+						jQuery(".hide_search_div").html("&laquo; Show filter");
 					});
 				}
 				else{
-					jQuery("#dir-search-form").animate({right: '0'},'slow',function(){
-						jQuery(".hide_search_div").html("Hide it &raquo;");
+					jQuery("#map-search-form").animate({right: '0'},'slow',function(){
+						jQuery(".hide_search_div").html("Hide filter &raquo;");
 					});
 				}
 			});
 			
 			jQuery(".clear_search").click(function(){
-			window.location.href='<?php echo get_permalink();?>';
+				window.location.href='<?php echo get_permalink();?>';
 			});
-			var map_height = jQuery( window ).height();
-			var _window = jQuery(window).width();
-			if(_window > 767){
-				jQuery("#form_fileds").mCustomScrollbar({
-					setHeight:eval(map_height-140),
-					theme:"dark-3"
-				});	
-			}					
-			jQuery("#mapnew").css("height",(map_height-20));
-			
             jQuery( "#geo-slider" ).slider({
                 range: "max",
                 min: 10,
@@ -367,6 +326,7 @@ function noone_map_searching()
                 value: <?php echo (isset($_REQUEST['geo-radius']) ? $_REQUEST['geo-radius'] : 10)?>,
                 slide: function( event, ui ) {
                     jQuery( "#dir-searchinput-geo-radius" ).val( ui.value );
+                    jQuery(".metric").html( ui.value+' Km' );
                     jQuery.goMap.removeOverlay('circle', 'riga');
                     var dlat = jQuery("#user_lat").val( ) ;
                     var dlong = jQuery("#user_long").val() ;
@@ -380,16 +340,22 @@ function noone_map_searching()
                 }
 
             }).on( "slidestop", function( event, ui ) {
-				jQuery(".form-horizontal").submit();
+				//jQuery(".form-horizontal").submit();
 			} );
                 
             jQuery( "#dir-searchinput-geo-radius" ).val( jQuery( "#geo-slider" ).slider( "value" ) );
+            jQuery(".metric").html( jQuery( "#geo-slider" ).slider( "value" )+' Km' );
 		});
     jQuery(function() { 
 		var dlat = jQuery("#user_lat").val( ) ;
         var dlong = jQuery("#user_long").val() ;
         jQuery("#mapnew").goMap({
 			maptype: 'ROADMAP',
+			scrollwheel: false,
+			navigationControl:false,
+			mapTypeControlOptions:{
+				position: 'TOP_LEFT'
+			},
 			latitude: dlat, 
 			longitude: dlong,
             zoom:<?php echo (isset($_REQUEST['geo-radius']) ? 5 : 10)?>,
