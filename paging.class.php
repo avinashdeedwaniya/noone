@@ -275,14 +275,14 @@ class paging
 			//Just make the first page url if we need
 			if ( $start_page > 1 )
 			{
-				$threedot_first = ( $start_page != '2' ) ? '...' : ' ';
+				$threedot_first = ( $start_page != '2' ) ? '<li><a>...</a></li>' : ' ';
 				$this->page_first = $this->generate_link ( '1' , '1' ) . $threedot_first ;
 			}
 			
 			//Just make the last page url if we need
 			if ( $end_page < $page_count  )
 			{
-				$threedot_last = ( $end_page != $page_count - 1 ) ? '...' : ' ';
+				$threedot_last = ( $end_page != $page_count - 1 ) ? '<li><a>...</a></li>' : ' ';
 				
 				$this->page_last = $threedot_last . $this->generate_link ( $page_count , $page_count ) ;
 			}

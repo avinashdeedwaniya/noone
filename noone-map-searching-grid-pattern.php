@@ -199,7 +199,7 @@ function noone_map_searching()
 (mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY '.$order_by.' ASC ";
     $t_record        = $wpdb->get_results($TSQL);
     $total_records   = count($t_record);
-    $record_per_page = 2;
+    $record_per_page = 12;
     $paged = ( get_query_var( 'page' ) ) ? absint( get_query_var( 'page' ) ) : 1;
     $paging->assign(get_permalink().'?search_name='.$_REQUEST['search_name'].'&search_city='.$_REQUEST['search_city'].'&search_state='.$_REQUEST['search_state'].'&search_sector='.$_REQUEST['search_sector'].'&search_occp_type='.$_REQUEST['search_occp_type'].'&search_occp_city='.$_REQUEST['search_occp_city'].'&search_occp_state='.$_REQUEST['search_occp_state'].'&search_btn='.$_REQUEST['search_btn'].'&dir-search='.$_REQUEST['dir-search'].'', $total_records, $record_per_page,$paged);
     $sql_limit = $paging->sql_limit();
@@ -211,8 +211,16 @@ function noone_map_searching()
 <div class="author-entry">
     <script src="<?php echo plugins_url('assets/js/jquery.validate.js', __FILE__)?>"></script> 
 
+<ul class="margin_padding_0" > 
+<li class="well margin_padding_0" > <div class="panel panel-default margin_padding_0" >
+                 
+                <div class="panel-body">
+                
 	<div id="mapnew" style="width:100%; clear:both;" ></div> 
-	<div id="map-search-form">
+	</div></div></li></ul>
+	<div >
+		<ul class="margin_padding_0"  ><li class="well sform_li margin_padding_0" style="list-style:none;" id="map-search-form"><div class="panel panel-default margin_padding_0"><div class="panel-body">
+		
 		<form class="form-horizontal"  method="get" action="<?php  echo get_permalink(); ?>">
 			  <input type="hidden" name="user_lat" value="<?php  echo $_REQUEST['user_lat']; ?>" id="user_lat">
 			  <input type="hidden" id="user_long" value="<?php  echo $_REQUEST['user_long']; ?>" name="user_long">
@@ -254,12 +262,11 @@ function noone_map_searching()
 					</div>
 					<div class="dir-searchinput-settings" id="dir-searchinput-settings-position">
 						<div id="dir-search-advanced">
-							<p class="searchbox-title text">Search around my position</p>
+							<p class="searchbox-title text">Search around me</p>
 							<div class="geo-loc" >
 							<div class="search-slider-geo">
 								<div class="geo-button">
-									<?php
-										echo $_REQUEST['geo'];if($_REQUEST['geo']=='on'){ ?>
+									<?php if($_REQUEST['geo']=='on'){ ?>
 									<input type="checkbox" checked="checked" id="dir-searchinput-geo" name="geo" class="hidden">
 									<div class="iphone-style" rel="dir-searchinput-geo">&nbsp;</div>
 									<?php  } else { ?>
@@ -268,18 +275,14 @@ function noone_map_searching()
 										<?php
 											} ?>
 								</div>
-								<div id="geo-slider"></div>
-								<div class="text-geo-radius clear">
-									<input type="hidden" value="<?php  echo $_REQUEST['geo-radius']; ?>" id="dir-searchinput-geo-radius" name="geo-radius">
-									<div class="metric">10 km</div>
-								</div>
+								<input type="hidden" name="geo-radius" class="slider-slider" value="<?php  echo $_REQUEST['geo-radius']; ?>" id="dir-searchinput-geo-radius" />
 							</div>
 						</div>
 						</div>
 						</div>
 					<div class="dir-searchinput-settings" id="dir-searchinput-settings">
 						<div id="dir-search-advanced">
-							<div class="searchbox-title order-by-text text">Show results in order by</div>
+							<p class="searchbox-title order-by-text">Results in order</p>
 							 
 								<select name="search_order" class="form-control" id="search_order">
 									<option value="display_name" <?php
@@ -293,63 +296,33 @@ function noone_map_searching()
 			</div>
 			<div id="dir-search-button">
 				<input type="submit" class="btn btn-primary" value="Search" name="search_btn" id="dir-searchsubmit">
-				<a class="btn btn-primary clear_search" id="clear_search">Clear Search</a>
-				<a href="javascript:void(0);" class="hide_search_div">Hide filter &raquo;</a>
+				<input type="button" class="btn btn-primary clear_search" value="Clear Search" name="clear_search_btn" id="clear_search">
+				 <input type="hidden" value="<?php if(isset($_REQUEST['geo-radius']) && trim($_REQUEST['geo-radius'])!='' && isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on'){ echo '1';}?>" id="check_dist_calc" />
+				 
 			</div>
 			</form>
+	
+	
+	</div> </div> </li></ul>
+	
 	</div>			
  
     <script type="text/javascript">
 		
 		jQuery(document).ready(function(){
-			jQuery(".hide_search_div").on("click",function(){
-				 
-				if(jQuery("#map-search-form").css('right') == '0px'){
-					jQuery("#map-search-form").animate({right: '-284px'},'slow',function(){
-						jQuery(".hide_search_div").html("&laquo; Show filter");
-					});
-				}
-				else{
-					jQuery("#map-search-form").animate({right: '0'},'slow',function(){
-						jQuery(".hide_search_div").html("Hide filter &raquo;");
-					});
-				}
-			});
+			 
 			
 			jQuery(".clear_search").click(function(){
 				window.location.href='<?php echo get_permalink();?>';
 			});
-            jQuery( "#geo-slider" ).slider({
-                range: "max",
-                min: 10,
-                max: 500,
-                value: <?php echo (isset($_REQUEST['geo-radius']) ? $_REQUEST['geo-radius'] : 10)?>,
-                slide: function( event, ui ) {
-                    jQuery( "#dir-searchinput-geo-radius" ).val( ui.value );
-                    jQuery(".metric").html( ui.value+' Km' );
-                    jQuery.goMap.removeOverlay('circle', 'riga');
-                    var dlat = jQuery("#user_lat").val( ) ;
-                    var dlong = jQuery("#user_long").val() ;
-                    jQuery.goMap.createCircle({
-                        id: 'riga',
-                        latitude: dlat,
-                        longitude: dlong,
-                        radius: (ui.value * 1000)
-                    });
-                    
-                }
-
-            }).on( "slidestop", function( event, ui ) {
-				//jQuery(".form-horizontal").submit();
-			} );
-                
-            jQuery( "#dir-searchinput-geo-radius" ).val( jQuery( "#geo-slider" ).slider( "value" ) );
-            jQuery(".metric").html( jQuery( "#geo-slider" ).slider( "value" )+' Km' );
+			
+           
 		});
     jQuery(function() { 
+		  
 		var dlat = jQuery("#user_lat").val( ) ;
         var dlong = jQuery("#user_long").val() ;
-        jQuery("#mapnew").goMap({
+        var map = jQuery("#mapnew").goMap({
 			maptype: 'ROADMAP',
 			scrollwheel: false,
 			navigationControl:false,
@@ -378,7 +351,18 @@ function noone_map_searching()
                         longitude: " . $author_info->perma_long . ", 
                         id: 'map_" . $i . "', 
                         icon: '".$icon."',
-						html: { content: '<div class=\"row\"><div class=\"col-xs-5\"><img src=\"".get_noone_meta($author_info->ID,'gomap_marker_html')."\" ></div><div class=\"col-xs-7\">".$author_info->first_name."<br/>".round($author->distance,2)." Km from you<br/><a href=\"javascript:void(0);\" onClick=\"javascript:info_show(\'".$author_info->first_name." ".$author_info->last_name."\',".$author_info->ID.",450,800);\" class=\"btn btn-primary btn-sm\">VIEW MORE</a></div></div>'}
+						html: { content: '<div id=\"iw-container\">' +
+                    '<div class=\"iw-title\">".$author_info->first_name." ".$author_info->last_name."</div>' +
+                    '<div class=\"iw-content\">' +
+                      '<div class=\"iw-subTitle\">History</div>' +
+                      '<img src=\"".get_noone_meta($author_info->ID,'gomap_marker_html')."\" alt=\"".$author_info->first_name."\" width=\"83\">' +
+                      '<p>".str_replace("\n","",nl2br(strip_tags(get_the_author_meta('description',$author->ID))))."</p>' +
+                      '<div class=\"iw-subTitle\">Contacts</div>' +
+                      '<p>E-mail: ".$author_info->user_email."<br/>Website: ".$author_info->user_url."</p>'+
+                      '<div class=\"iw-subTitle\"><a href=\"javascript:void(0);\" onClick=\"javascript:info_show(\'".$author_info->first_name." ".$author_info->last_name."\',".$author_info->ID.",450,800);\" class=\"btn btn-primary btn-sm\">VIEW MORE</a></div>'+
+                    '</div>' +
+                    '<div class=\"iw-bottom-gradient\"></div>' +
+                  '</div>'}
                         }";
             } 
         } 
@@ -389,7 +373,32 @@ function noone_map_searching()
             echo'';
 ?>
            ] 
-        }); 
+        });
+        jQuery('.slider-slider').jRange({
+                from: 10,
+                to: 500,
+                step: 1,
+                scale: [0,100,200,300,400,500],
+                format: '%s Km',
+                width: 150,
+                showLabels: true,
+                onstatechange:function(strr){
+					 if(jQuery("#check_dist_calc").val() == "1"){
+						jQuery.goMap.removeOverlay('circle', 'riga');
+						var dlat = jQuery("#user_lat").val( ) ;
+						var dlong = jQuery("#user_long").val() ;
+						jQuery.goMap.createCircle({
+							id: 'riga',
+							latitude: dlat,
+							longitude: dlong,
+							radius: (strr * 1000)
+						});
+					  }
+				}
+            });
+         
+        
+        
 <?php if(isset($_REQUEST['geo-radius']) && trim($_REQUEST['geo-radius'])!='' && isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on'){?>
 					var dist = jQuery( "#dir-searchinput-geo-radius" ).val();
 					
@@ -476,12 +485,12 @@ if ($fivesdrafts)
          <?php
            echo '<div class="user_block row"><figure class=" "><img src="' . get_noone_meta($author->ID,'gomap_marker_html') . '" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);" /></figure></div>';
             
-           echo' <div class="row"><input type="button" class="btn btn-primary btn-block" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);" value="View Full Info"></div>';
+           echo' <div class="row user_block_btn"><input type="button" class="btn btn-primary btn-block" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);" value="View Full Info"></div>';
 
             if (trim($author_info->perma_lat) != '' && trim($author_info->perma_long) != '')
             {
 ?>
-				<div class="row"><input type="button" class="gmap_button btn btn-primary btn-block" style="margin-top:10px;" id="map_but_<?php echo $i;?>" value="View on Map"></div>
+				<div class="row user_block_btn"><input type="button" class="gmap_button btn btn-primary btn-block" style="margin-top:10px;" id="map_but_<?php echo $i;?>" value="View on Map"></div>
 				<script type="text/javascript">
 				jQuery(function(){
 					

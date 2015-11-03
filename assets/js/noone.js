@@ -8,17 +8,16 @@ jQuery(document).ready(function() {
 	
     function getLocation() {
         if (navigator.geolocation) {
-            jQuery("#geo-slider").slider("enable");
             jQuery('#search_order option[value=distance]').prop('disabled', false);
             navigator.geolocation.getCurrentPosition(showPosition);
+            
         } else {
             jQuery('#search_order option[value=distance]').prop('disabled', true);
-            jQuery("#geo-slider").slider("disable");
+            jQuery("#check_dist_calc").attr("value","0");
             jQuery("#dir-searchinput-geo").attr("checked", "");
             jQuery(".iphone-style").addClass("off");
             jQuery("#dir-searchinput-geo-radius").val('');
-
-
+            
         }
     }
     
@@ -46,7 +45,7 @@ jQuery(document).ready(function() {
             id: 'position_marker',
             title: 'You are here.',
             draggable: true,
-            icon: 'http://localhost/wptest/wp-content/plugins/noone/assets/images/map-marker.png',
+            icon: 'http://172.16.1.219/wptest/wp-content/plugins/noone/assets/images/map-marker.png',
             html: {
                 content: 'You are here.'
             }
@@ -58,6 +57,8 @@ jQuery(document).ready(function() {
             longitude: position.coords.longitude,
             radius: (radius_val * 1000)
         });
+         
+        jQuery("#check_dist_calc").attr("value","1");
 
         jQuery.goMap.createListener({
             type: 'marker',
@@ -88,15 +89,21 @@ jQuery(document).ready(function() {
     }
 
     jQuery(".iphone-style").on("click", function() {
+ 
         if (jQuery(this).hasClass("off")) {
+			 
             getLocation();
             //jQuery("#dir-searchinput-geo").attr("checked","checked");
             //jQuery(this).removeClass("off");
         } else {
+			 
             jQuery("#dir-searchinput-geo").attr("checked", false);
             jQuery(this).addClass("off");
             jQuery("#user_lat").val('');
             jQuery("#user_long").val('');
+			jQuery.goMap.showHideMarker('position_marker');
+            jQuery.goMap.removeOverlay('circle', 'riga');
+
         }
     });
 
@@ -115,50 +122,51 @@ jQuery(document).ready(function() {
 	
 	function set_map_searchbar_height(){
 		var _window = jQuery(window).width();
-		var _wHeight = jQuery(window).height();
+		var _wHeight = (jQuery(window).height());
 		var _mapSearchHeight = jQuery("#map-search-form").outerHeight(true);
-		jQuery("#mapnew").css("height", (_wHeight - 20));		 
+		jQuery("#mapnew").css("height", (_wHeight-33));		 
 		if(_window > 767){			
 			
 			if(jQuery("#mapnew").height() < _mapSearchHeight){
-				 console.log("map="+jQuery("#mapnew").height()+' window='+_wHeight+' search='+_mapSearchHeight);
-				jQuery("#map-search-form").css("top", '0px');
-				jQuery("#map-search-form").css("height", (_wHeight - 30));
+				jQuery("#map-search-form").css("top", '17px');
+				jQuery("#map-search-form").css("height", (jQuery("#mapnew").height()));
+				 
 				jQuery("#map-search-form").mCustomScrollbar({
 					setHeight:eval(_wHeight),
 					theme:"dark-3"
 				});	
 			}
 			else{
-				console.log("map="+jQuery("#mapnew").height()+' window='+_wHeight+' search='+_mapSearchHeight);
 				jQuery("#map-search-form").css("height", 'auto');
-				jQuery("#map-search-form").css("top", (jQuery("#mapnew").height() - (_mapSearchHeight-10)));
-				jQuery("#map-search-form").mCustomScrollbar("destroy")
+				jQuery("#map-search-form").css("top", (jQuery("#mapnew").height() - (_mapSearchHeight)));
+				jQuery("#map-search-form").mCustomScrollbar("destroy");
+			 
 			}
 		}
 		else{
 			jQuery("#map-search-form").css("height", 'auto');
 			jQuery("#map-search-form").css("top", '0px');
+			jQuery("#map-search-form").css("overflow", '');
 		}
 	}
 	 
     setTimeout(function() {
         equalizer();
         set_map_searchbar_height();
-    }, 3000);
+    }, 300);
 
     jQuery(window).resize(function() {
         setTimeout(function() {
             equalizer();
-            set_map_searchbar_height();
-        }, 3000);
+            //set_map_searchbar_height();
+        }, 300);
 
     });
     jQuery(window).on("orientationchange", function(event) {
         setTimeout(function() {
             equalizer();
             set_map_searchbar_height();
-        }, 3000);
+        }, 300);
 
     });
     jQuery("ul.pagination li").removeClass("active");

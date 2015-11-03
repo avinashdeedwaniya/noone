@@ -384,6 +384,7 @@ function noone_users($user)
     wp_enqueue_script('noone_jquery_ui');
     wp_register_style('noone_jquery_css', plugins_url('assets/css/jquery-ui.css', __FILE__));
     wp_enqueue_style('noone_jquery_css');
+
 ?>
        <script>
         jQuery(function() {
@@ -831,17 +832,17 @@ function remove_all_theme_styles() {
     $wp_styles->queue = array();
     wp_enqueue_script('jquery');
     wp_enqueue_script('noone_google_map', 'http://maps.google.com/maps/api/js?sensor=false');
-    wp_enqueue_script('noone_jquery_scroll', plugins_url('assets/js/jquery-ui.js', __FILE__));
+    wp_enqueue_script('noone_jquery_scroll', plugins_url('assets/js/jquery.range-min.js', __FILE__));
     wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
     wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0'); 
-    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));
+    wp_enqueue_style('jquery.range.css', plugins_url('assets/css/jquery.range.css', __FILE__), null, '1.0'); 
+     wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));
     wp_enqueue_script('noone_gomap', plugins_url('assets/js/jquery.gomap-1.3.3.js', __FILE__));
     wp_enqueue_script('noone_js', plugins_url('assets/js/noone.js', __FILE__));
     wp_enqueue_style('noonecss', plugins_url('assets/css/noone.css', __FILE__) );    
     wp_enqueue_style('noonegridcss', plugins_url( 'assets/css/bootstrap.css', __FILE__));
     wp_enqueue_style('mCustomScrollbarcss', plugins_url( 'assets/css/jquery.mCustomScrollbar.css', __FILE__));
     wp_enqueue_script('media-upload');
-
 }
 
 function remove_all_theme_styles_no_map() {
