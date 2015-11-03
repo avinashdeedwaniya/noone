@@ -14,20 +14,20 @@ function noone_map_searching()
     {
         $distance_select=' , p.distance_unit
                  * DEGREES(ACOS(COS(RADIANS(p.latpoint))
-                 * COS(RADIANS(mt30.meta_value ))
-                 * COS(RADIANS(p.longpoint) - RADIANS(mt31.meta_value))
+                 * COS(RADIANS(up.perma_lat ))
+                 * COS(RADIANS(p.longpoint) - RADIANS(up.perma_long))
                  + SIN(RADIANS(p.latpoint))
-                 * SIN(RADIANS(mt30.meta_value)))) AS distance ';
+                 * SIN(RADIANS(up.perma_lat)))) AS distance ';
         
         $join= ' JOIN (   
         SELECT  '.$_REQUEST['user_lat'].'  AS latpoint,  '.$_REQUEST['user_long'].' AS longpoint,
                 '.$_REQUEST['geo-radius'].'.0 AS radius,      111.045 AS distance_unit
     ) AS p ON 1=1 ';
 
-        $where_qry = '  AND (mt30.meta_value
+        $where_qry = '  AND (up.perma_lat
      BETWEEN p.latpoint  - (p.radius / p.distance_unit)
          AND p.latpoint  + (p.radius / p.distance_unit)
-    AND mt31.meta_value
+    AND up.perma_long
      BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
          AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))) ';
       
@@ -47,57 +47,24 @@ function noone_map_searching()
         $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta ON (".$wpdb->prefix."users.ID = ".$wpdb->prefix."usermeta.user_id)
         INNER JOIN ".$wpdb->prefix."usermeta AS mt1 ON (".$wpdb->prefix."users.ID = mt1.user_id) ";
     }
-    if (isset($_REQUEST['search_city']) && trim($_REQUEST['search_city']) != '')
+    if ((isset($_REQUEST['search_city']) && trim($_REQUEST['search_city']) != '') || (isset($_REQUEST['search_state']) && trim($_REQUEST['search_state']) != '') || (isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on'))
     {
-        $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt3 ON (".$wpdb->prefix."users.ID = mt3.user_id)
+        $SQL .= " INNER JOIN ".$wpdb->prefix."user_personal AS up ON (".$wpdb->prefix."users.ID = up.user_id)
         ";
     }
-    if (isset($_REQUEST['search_occp_city']) && trim($_REQUEST['search_occp_city']) != '')
+    if ((isset($_REQUEST['search_occp_city']) && trim($_REQUEST['search_occp_city']) != '') || 
+    (isset($_REQUEST['search_occp_state']) && trim($_REQUEST['search_occp_state']) != '') ||
+    (isset($_REQUEST['search_occp_type']) && trim($_REQUEST['search_occp_type']) != '') ||
+    (isset($_REQUEST['search_sector']) && trim($_REQUEST['search_sector']) != '')
+    )
     {
-        $SQL .= "INNER JOIN ".$wpdb->prefix."usermeta AS mt5 ON (".$wpdb->prefix."users.ID = mt5.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt6 ON (".$wpdb->prefix."users.ID = mt6.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt26 ON (".$wpdb->prefix."users.ID = mt26.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt27 ON (".$wpdb->prefix."users.ID = mt27.user_id) ";
+		 $SQL .= " 	INNER JOIN ".$wpdb->prefix."user_self AS slf ON (".$wpdb->prefix."users.ID = slf.user_id)
+					INNER JOIN ".$wpdb->prefix."user_service AS ser ON (".$wpdb->prefix."users.ID = ser.user_id)
+					INNER JOIN ".$wpdb->prefix."user_retire AS ret ON (".$wpdb->prefix."users.ID = ret.user_id)
+					INNER JOIN ".$wpdb->prefix."user_social AS soc ON (".$wpdb->prefix."users.ID = soc.user_id) ";
     }
-    if (isset($_REQUEST['search_state']) && trim($_REQUEST['search_state']) != '')
-    {
-        $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt7 ON (".$wpdb->prefix."users.ID = mt7.user_id)
-         ";
-    }
-    if (isset($_REQUEST['search_occp_state']) && trim($_REQUEST['search_occp_state']) != '')
-    {
-        $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt9 ON (".$wpdb->prefix."users.ID = mt9.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt10 ON (".$wpdb->prefix."users.ID = mt10.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt28 ON (".$wpdb->prefix."users.ID = mt28.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt29 ON (".$wpdb->prefix."users.ID = mt29.user_id) ";
-    }
-    if (isset($_REQUEST['search_sector']) && trim($_REQUEST['search_sector']) != '')
-    {
-        $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt11 ON (".$wpdb->prefix."users.ID = mt11.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt12 ON (".$wpdb->prefix."users.ID = mt12.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt13 ON (".$wpdb->prefix."users.ID = mt13.user_id) ";
-    }
-    if (isset($_REQUEST['search_occp_type']) && trim($_REQUEST['search_occp_type']) != '')
-    {
-        $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt14 ON (".$wpdb->prefix."users.ID = mt14.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt15 ON (".$wpdb->prefix."users.ID = mt15.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt16 ON (".$wpdb->prefix."users.ID = mt16.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt17 ON (".$wpdb->prefix."users.ID = mt17.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt18 ON (".$wpdb->prefix."users.ID = mt18.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt19 ON (".$wpdb->prefix."users.ID = mt19.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt20 ON (".$wpdb->prefix."users.ID = mt20.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt21 ON (".$wpdb->prefix."users.ID = mt21.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt22 ON (".$wpdb->prefix."users.ID = mt22.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt23 ON (".$wpdb->prefix."users.ID = mt23.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt24 ON (".$wpdb->prefix."users.ID = mt24.user_id)
-        INNER JOIN ".$wpdb->prefix."usermeta AS mt25 ON (".$wpdb->prefix."users.ID = mt25.user_id) ";
-    } 
-
-    if (isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on')
-    {
-        $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt30 ON (".$wpdb->prefix."users.ID = mt30.user_id and `mt30`.`meta_key`='perma_lat')";
-        $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt31 ON (".$wpdb->prefix."users.ID = mt31.user_id and `mt31`.`meta_key`='perma_long')";
-    }
+  
+    
     $SQL .= " INNER JOIN ".$wpdb->prefix."usermeta AS mt2 ON (".$wpdb->prefix."users.ID = mt2.user_id) WHERE 1=1 ".$where_qry;
 
     // START WHERE CONDITIONS
@@ -113,89 +80,79 @@ function noone_map_searching()
     }
     if (isset($_REQUEST['search_city']) && trim($_REQUEST['search_city']) != '')
     {
-        $SQL .= "AND  
-    (
-        (mt3.meta_key = 'city' AND LOWER(CAST(mt3.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_city']) . "%') 
-    )";
+        $SQL .= "AND (LOWER(up.city) LIKE '%" . strtolower($_REQUEST['search_city']) . "%')";
     }
     if (isset($_REQUEST['search_state']) && trim($_REQUEST['search_state']) != '')
     {
-        $SQL .= "AND  
-    (
-        (mt7.meta_key = 'state' AND LOWER(CAST(mt7.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_state']) . "%') 
-    )";
+        $SQL .= "AND (LOWER(up.state) LIKE '%" . strtolower($_REQUEST['search_state']) . "%') ";
     }
     if (isset($_REQUEST['search_sector']) && trim($_REQUEST['search_sector']) != '')
     {
         $SQL .= "AND  
-    (
-        (mt11.meta_key = 'service_type' AND LOWER(CAST(mt11.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_sector']) . "%') 
-        OR
-        (mt12.meta_key = 'retire_type' AND LOWER(CAST(mt12.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_sector']) . "%')
-        OR
-        (mt13.meta_key = 'social_type' AND LOWER(CAST(mt13.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_sector']) . "%')
-        ) ";
+		(
+			(LOWER(ser.service_type) LIKE '%" . strtolower($_REQUEST['search_sector']) . "%')
+			OR
+			(LOWER(ret.retire_type) LIKE '%" . strtolower($_REQUEST['search_sector']) . "%') 
+			OR
+			(LOWER(soc.social_type) LIKE '%" . strtolower($_REQUEST['search_sector']) . "%') 
+		 ) ";
     }
     if (isset($_REQUEST['search_occp_city']) && trim($_REQUEST['search_occp_city']) != '')
     {
         $SQL .= "AND  
-    (
-        (mt5.meta_key = 'self_city' AND LOWER(CAST(mt5.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_city']) . "%') 
-        OR
-        (mt6.meta_key = 'service_city' AND LOWER(CAST(mt6.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_city']) . "%')
-        )
-        OR
-        (mt26.meta_key = 'retire_city' AND LOWER(CAST(mt26.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_city']) . "%')
-        )
-        OR
-        (mt27.meta_key = 'social_city' AND LOWER(CAST(mt27.meta_value AS CHAR)) LIKE '%" .strtolower( $_REQUEST['search_occp_city']) . "%')
-        ) ";
+		(
+			(LOWER(slf.self_city) LIKE '%" . strtolower($_REQUEST['search_occp_city']) . "%')
+			OR
+			(LOWER(ser.service_city) LIKE '%" . strtolower($_REQUEST['search_occp_city']) . "%')
+			OR
+			(LOWER(ret.retire_city) LIKE '%" . strtolower($_REQUEST['search_occp_city']) . "%')
+			OR
+			(LOWER(soc.social_city) LIKE '%" . strtolower($_REQUEST['search_occp_city']) . "%')
+		 ) ";
     }
     if (isset($_REQUEST['search_occp_state']) && trim($_REQUEST['search_occp_state']) != '')
     {
         $SQL .= "AND  
-    (
-        (mt9.meta_key = 'self_state' AND LOWER(CAST(mt9.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_state']) . "%') 
-        OR
-        (mt10.meta_key = 'service_state' AND LOWER(CAST(mt10.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_state']) . "%')
-        
-        OR
-        (mt28.meta_key = 'retire_state' AND LOWER(CAST(mt28.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_state']) . "%')
-        
-        OR
-        (mt29.meta_key = 'social_state' AND LOWER(CAST(mt29.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_state']) . "%')
-        ) ";
+		(
+			(LOWER(slf.self_state) LIKE '%" . strtolower($_REQUEST['search_occp_state']) . "%')
+			OR
+			(LOWER(ser.service_state) LIKE '%" . strtolower($_REQUEST['search_occp_state']) . "%')
+			OR
+			(LOWER(ret.retire_state) LIKE '%" . strtolower($_REQUEST['search_occp_state']) . "%')
+			OR
+			(LOWER(soc.social_state) LIKE '%" . strtolower($_REQUEST['search_occp_state']) . "%')
+		) ";
     }
     if (isset($_REQUEST['search_occp_type']) && trim($_REQUEST['search_occp_type']) != '')
     {
         $SQL .= "AND  
         (
-        (mt14.meta_key = 'self_title' AND LOWER(CAST(mt14.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%') 
-        OR
-        (mt15.meta_key = 'self_service' AND LOWER(CAST(mt15.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt16.meta_key = 'self_info' AND LOWER(CAST(mt16.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt17.meta_key = 'service_title' AND LOWER(CAST(mt17.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt18.meta_key = 'service_post_name' AND LOWER(CAST(mt18.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt19.meta_key = 'service_info' AND LOWER(CAST(mt19.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt20.meta_key = 'retire_title' AND LOWER(CAST(mt20.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt21.meta_key = 'retire_post_name' AND LOWER(CAST(mt21.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt22.meta_key = 'retire_info' AND LOWER(CAST(mt22.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt23.meta_key = 'social_title' AND LOWER(CAST(mt23.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt24.meta_key = 'social_work_as' AND LOWER(CAST(mt24.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
-        OR
-        (mt25.meta_key = 'social_info' AND LOWER(CAST(mt25.meta_value AS CHAR)) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			(LOWER(slf.self_title) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(slf.self_service) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(slf.self_info) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(ser.service_title) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(ser.service_post_name) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(ser.service_info) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(ret.retire_title) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(ret.retire_post_name) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(ret.retire_info) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(soc.social_title) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(soc.social_work_as) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
+			OR
+			(LOWER(soc.social_info) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
         ) ";
     }
-   $TSQL            = $SQL . " AND
+   echo $TSQL            = $SQL . " AND
 (mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY '.$order_by.' ASC ";
     $t_record        = $wpdb->get_results($TSQL);
     $total_records   = count($t_record);

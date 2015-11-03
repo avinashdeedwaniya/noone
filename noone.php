@@ -40,6 +40,96 @@ function noone_install() {
 
         $post_id = wp_insert_post($my_page);
     }
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $table_name = $wpdb->prefix . 'user_personal';
+	$sql = "CREATE TABLE $table_name (
+		  `user_id` bigint(20) NOT NULL,
+		  `perma_lat` varchar(255) NOT NULL,
+		  `perma_long` varchar(255) NOT NULL,
+		  `address_line_1` text NOT NULL,
+		  `city` varchar(255) NOT NULL,
+		  `district` varchar(255) NOT NULL,
+		  `pin_code` varchar(255) NOT NULL,
+		  `state` varchar(255) NOT NULL,
+		  `country` varchar(255) NOT NULL,
+		  `user_twitter` varchar(255) NOT NULL,
+		  `user_fb_id` varchar(255) NOT NULL,
+		  `linked_in` varchar(255) NOT NULL,
+		  `google_plus` varchar(255) NOT NULL
+	) $charset_collate;";
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( $sql );
+	
+	$table_name = $wpdb->prefix . 'user_retire';
+	$sql = "CREATE TABLE $table_name (
+		  `user_id` bigint(20) NOT NULL,
+		  `retire_type` enum('govt','private') NOT NULL,
+		  `retire_title` varchar(255) NOT NULL,
+		  `retire_post_name` varchar(255) NOT NULL,
+		  `retire_info` text NOT NULL,
+		  `retire_address_line_1` text NOT NULL,
+		  `retire_district` varchar(255) NOT NULL,
+		  `retire_pin_code` varchar(255) NOT NULL,
+		  `retire_city` varchar(255) NOT NULL,
+		  `retire_state` varchar(255) NOT NULL,
+		  `retire_country` varchar(255) NOT NULL
+	) $charset_collate;";
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( $sql );
+	
+	$table_name = $wpdb->prefix . 'user_self';
+	$sql = "CREATE TABLE $table_name (
+		  `user_id` bigint(20) NOT NULL,
+		  `self_title` varchar(255) NOT NULL,
+		  `self_service` varchar(255) NOT NULL,
+		  `self_info` text NOT NULL,
+		  `self_address_line_1` text NOT NULL,
+		  `self_district` varchar(255) NOT NULL,
+		  `self_pin_code` varchar(255) NOT NULL,
+		  `self_city` varchar(255) NOT NULL,
+		  `self_state` varchar(255) NOT NULL,
+		  `self_country` varchar(255) NOT NULL
+	) $charset_collate;";
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( $sql );
+	
+	$table_name = $wpdb->prefix . 'user_service';
+	$sql = "CREATE TABLE $table_name (
+		  `user_id` bigint(20) NOT NULL,
+		  `service_type` enum('govt','private') NOT NULL,
+		  `service_title` varchar(255) NOT NULL,
+		  `service_post_name` varchar(255) NOT NULL,
+		  `service_info` text NOT NULL,
+		  `service_address_line_1` text NOT NULL,
+		  `service_district` varchar(255) NOT NULL,
+		  `service_pin_code` varchar(255) NOT NULL,
+		  `service_city` varchar(255) NOT NULL,
+		  `service_state` varchar(255) NOT NULL,
+		  `service_country` varchar(255) NOT NULL
+	) $charset_collate;";
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( $sql );
+	
+	$table_name = $wpdb->prefix . 'user_social';
+	$sql = "CREATE TABLE $table_name (
+		  `user_id` bigint(20) NOT NULL,
+		  `social_type` varchar(255) NOT NULL,
+		  `social_title` varchar(255) NOT NULL,
+		  `social_work_as` varchar(255) NOT NULL,
+		  `social_info` text NOT NULL,
+		  `social_address_line_1` text NOT NULL,
+		  `social_district` varchar(255) NOT NULL,
+		  `social_pin_code` varchar(255) NOT NULL,
+		  `social_city` varchar(255) NOT NULL,
+		  `social_state` varchar(255) NOT NULL,
+		  `social_country` varchar(255) NOT NULL
+	) $charset_collate;";
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( $sql );
+	
+	
+ 
 }   
 
 //Template fallback
@@ -86,70 +176,85 @@ function add_noone_image_size(){
     
 }
 
+function get_user_personal_meta($uid,$field,$database){
+	global $wpdb;
+	$SQL = "select user_id from ".$wpdb->prefix."$database where user_id= $uid";
+	$t_record        = $wpdb->get_results($SQL);
+    $user_records   = count($t_record);
+    if($user_records > 0){
+		  $SQL = "select $field from ".$wpdb->prefix."$database where user_id= $uid";
+		  $u_record        = $wpdb->get_results($SQL);
+		  return $u_record[0]->$field;		  
+	}
+	else{
+		return '';
+	} 
+}
+
 function noone_users($user)
 {
 	if(!get_option('noone_active'))
 		return false;
 	
     $userid                 = $user->ID;
-    $address_line_1         = get_user_meta($userid, 'address_line_1', true);
-   // $address_line_2         = get_user_meta($userid, 'address_line_2', true);
-    $city                   = get_user_meta($userid, 'city', true);
-    $district                   = get_user_meta($userid, 'district', true);
-    $state                  = get_user_meta($userid, 'state', true);
-    $pin_code                   = get_user_meta($userid, 'pin_code', true);
-    $country                = get_user_meta($userid, 'country', true);
-
-    $user_twitter           = get_user_meta($userid, 'user_twitter', true);
-    $user_fb_id             = get_user_meta($userid, 'user_fb_id', true);
-    $google_plus            = get_user_meta($userid, 'google_plus', true);
-    $linked_in              = get_user_meta($userid, 'linked_in', true);
-
-    $perma_lat              = get_user_meta($userid, 'perma_lat', true);
-    $perma_long             = get_user_meta($userid, 'perma_long', true);
-    $self_title             = get_user_meta($userid, 'self_title', true);
-    $self_service           = get_user_meta($userid, 'self_service', true);
-    $self_info              = get_user_meta($userid, 'self_info', true);
-    $self_address_line_1    = get_user_meta($userid, 'self_address_line_1', true);
-    //$self_address_line_2    = get_user_meta($userid, 'self_address_line_2', true);
-    $self_district                   = get_user_meta($userid, 'self_district', true);
-    $self_pin_code                   = get_user_meta($userid, 'self_pin_code', true);
-    $self_city              = get_user_meta($userid, 'self_city', true);
-    $self_state             = get_user_meta($userid, 'self_state', true);
-    $self_country           = get_user_meta($userid, 'self_country', true);
-    $service_type           = get_user_meta($userid, 'service_type', true);
-    $service_title          = get_user_meta($userid, 'service_title', true);
-    $service_post_name      = get_user_meta($userid, 'service_post_name', true);
-    $service_info           = get_user_meta($userid, 'service_info', true);
-    $service_address_line_1 = get_user_meta($userid, 'service_address_line_1', true);
-   // $service_address_line_2 = get_user_meta($userid, 'service_address_line_2', true);
-    $service_district                   = get_user_meta($userid, 'service_district', true);
-    $service_pin_code                   = get_user_meta($userid, 'service_pin_code', true);
-    $service_city           = get_user_meta($userid, 'service_city', true);
-    $service_state          = get_user_meta($userid, 'service_state', true);
-    $service_country        = get_user_meta($userid, 'service_country', true);
-    $retire_type            = get_user_meta($userid, 'retire_type', true);
-    $retire_title           = get_user_meta($userid, 'retire_title', true);
-    $retire_post_name       = get_user_meta($userid, 'retire_post_name', true);
-    $retire_info            = get_user_meta($userid, 'retire_info', true);
-    $retire_address_line_1  = get_user_meta($userid, 'retire_address_line_1', true);
-    //$retire_address_line_2  = get_user_meta($userid, 'retire_address_line_2', true);
-    $retire_district                   = get_user_meta($userid, 'retire_district', true);
-    $retire_pin_code                   = get_user_meta($userid, 'retire_pin_code', true);
-    $retire_city            = get_user_meta($userid, 'retire_city', true);
-    $retire_state           = get_user_meta($userid, 'retire_state', true);
-    $retire_country         = get_user_meta($userid, 'retire_country', true);
-    $social_type            = get_user_meta($userid, 'social_type', true);
-    $social_title           = get_user_meta($userid, 'social_title', true);
-    $social_work_as         = get_user_meta($userid, 'social_work_as', true);
-    $social_info            = get_user_meta($userid, 'social_info', true);
-    $social_address_line_1  = get_user_meta($userid, 'social_address_line_1', true);
-    //$social_address_line_2  = get_user_meta($userid, 'social_address_line_2', true);
-    $social_district                   = get_user_meta($userid, 'social_district', true);
-    $social_pin_code                   = get_user_meta($userid, 'social_pin_code', true);
-    $social_city            = get_user_meta($userid, 'social_city', true);
-    $social_state           = get_user_meta($userid, 'social_state', true);
-    $social_country         = get_user_meta($userid, 'social_country', true);
+    $address_line_1         = get_user_personal_meta($userid, 'address_line_1', 'user_personal');
+    $city                   = get_user_personal_meta($userid, 'city', 'user_personal');
+    $district               = get_user_personal_meta($userid, 'district', 'user_personal');
+    $state                  = get_user_personal_meta($userid, 'state', 'user_personal');
+    $pin_code               = get_user_personal_meta($userid, 'pin_code', 'user_personal');
+    $country                = get_user_personal_meta($userid, 'country', 'user_personal');
+    $user_twitter           = get_user_personal_meta($userid, 'user_twitter', 'user_personal');
+    $user_fb_id             = get_user_personal_meta($userid, 'user_fb_id', 'user_personal');
+    $google_plus            = get_user_personal_meta($userid, 'google_plus', 'user_personal');
+    $linked_in              = get_user_personal_meta($userid, 'linked_in', 'user_personal');
+    $perma_lat              = get_user_personal_meta($userid, 'perma_lat', 'user_personal');
+    $perma_long             = get_user_personal_meta($userid, 'perma_long', 'user_personal');
+    
+    $self_title             = get_user_personal_meta($userid, 'self_title', 'user_self');
+    $self_service           = get_user_personal_meta($userid, 'self_service', 'user_self');
+    $self_info              = get_user_personal_meta($userid, 'self_info', 'user_self');
+    $self_address_line_1    = get_user_personal_meta($userid, 'self_address_line_1', 'user_self');
+    $self_district          = get_user_personal_meta($userid, 'self_district', 'user_self');
+    $self_pin_code          = get_user_personal_meta($userid, 'self_pin_code', 'user_self');
+    $self_city              = get_user_personal_meta($userid, 'self_city', 'user_self');
+    $self_state             = get_user_personal_meta($userid, 'self_state', 'user_self');
+    $self_country           = get_user_personal_meta($userid, 'self_country', 'user_self');
+    
+    
+    $service_type           = get_user_personal_meta($userid, 'service_type', 'user_service');
+    $service_title          = get_user_personal_meta($userid, 'service_title', 'user_service');
+    $service_post_name      = get_user_personal_meta($userid, 'service_post_name', 'user_service');
+    $service_info           = get_user_personal_meta($userid, 'service_info', 'user_service');
+    $service_address_line_1 = get_user_personal_meta($userid, 'service_address_line_1', 'user_service');
+    $service_district		= get_user_personal_meta($userid, 'service_district', 'user_service');
+    $service_pin_code		= get_user_personal_meta($userid, 'service_pin_code', 'user_service');
+    $service_city           = get_user_personal_meta($userid, 'service_city', 'user_service');
+    $service_state          = get_user_personal_meta($userid, 'service_state', 'user_service');
+    $service_country        = get_user_personal_meta($userid, 'service_country', 'user_service');
+    
+    
+    $retire_type            = get_user_personal_meta($userid, 'retire_type', 'user_retire');
+    $retire_title           = get_user_personal_meta($userid, 'retire_title', 'user_retire');
+    $retire_post_name       = get_user_personal_meta($userid, 'retire_post_name', 'user_retire');
+    $retire_info            = get_user_personal_meta($userid, 'retire_info', 'user_retire');
+    $retire_address_line_1  = get_user_personal_meta($userid, 'retire_address_line_1', 'user_retire');
+    $retire_district        = get_user_personal_meta($userid, 'retire_district', 'user_retire');
+    $retire_pin_code        = get_user_personal_meta($userid, 'retire_pin_code', 'user_retire');
+    $retire_city            = get_user_personal_meta($userid, 'retire_city', 'user_retire');
+    $retire_state           = get_user_personal_meta($userid, 'retire_state', 'user_retire');
+    $retire_country         = get_user_personal_meta($userid, 'retire_country', 'user_retire');
+    
+    
+    $social_type            = get_user_personal_meta($userid, 'social_type', 'user_social');
+    $social_title           = get_user_personal_meta($userid, 'social_title', 'user_social');
+    $social_work_as         = get_user_personal_meta($userid, 'social_work_as', 'user_social');
+    $social_info            = get_user_personal_meta($userid, 'social_info', 'user_social');
+    $social_address_line_1  = get_user_personal_meta($userid, 'social_address_line_1', 'user_social');
+    $social_district        = get_user_personal_meta($userid, 'social_district', 'user_social');
+    $social_pin_code        = get_user_personal_meta($userid, 'social_pin_code', 'user_social');
+    $social_city            = get_user_personal_meta($userid, 'social_city', 'user_social');
+    $social_state           = get_user_personal_meta($userid, 'social_state', 'user_social');
+    $social_country         = get_user_personal_meta($userid, 'social_country', 'user_social');
     if(!$perma_lat)
         $perma_lat  =   '26.847767';
     if(!$perma_long)
@@ -229,16 +334,13 @@ function noone_users($user)
                     
                     
                     jQuery("#mapnew").goMap({
+						maptype: 'ROADMAP',
                         markers: [ { 
                    "latitude":"<?php echo $perma_lat;?>",
                    "longitude":"<?php echo $perma_long;?>", 
                     title: 'marker title 1' ,
                     id: 'admin_marker', 
-                    draggable: true,
-                     html: { 
-                        content: 'Your Location.<br/>', 
-                        popup:true 
-                    } 
+                    draggable: true
                 }]});
                 
                 
@@ -387,7 +489,7 @@ function noone_users($user)
 
 ?>
        <script>
-        jQuery(function() {
+        jQuery(function(jQuery) {
             jQuery( "#tabs" ).tabs();
         });
         </script>
@@ -729,67 +831,81 @@ function noone_users($user)
 </div>
 <?php
 }
+function update_user_personal_meta($uid,$field,$data,$database){
+	global $wpdb;
+	  $SQL = "select user_id from ".$wpdb->prefix."$database where user_id= $uid";
+	$t_record        = $wpdb->get_results($SQL);
+      $user_records   = count($t_record);
+    if($user_records > 0){
+		  $SQL = "Update ".$wpdb->prefix."$database set `$field`='$data' where user_id= $uid";
+	}
+	else{
+		  $SQL = "Insert into ".$wpdb->prefix."$database set `$field`='$data', user_id= $uid";
+	} 
+	$query = $wpdb->query($SQL);
+}
+
 function noone_users_save($userid)
 {
     //print_r($_POST);die;
-    update_user_meta($userid, 'perma_lat', $_POST['perma_lat']);
-    update_user_meta($userid, 'perma_long', $_POST['perma_long']);
-    update_user_meta($userid, 'address_line_1', $_POST['address_line_1']);
-    //update_user_meta($userid, 'address_line_2', $_POST['address_line_2']);
-    update_user_meta($userid, 'city', $_POST['city']);
-    update_user_meta($userid, 'district', $_POST['district']);
-    update_user_meta($userid, 'pin_code', $_POST['pin_code']);
-    update_user_meta($userid, 'state', $_POST['state']);
-    update_user_meta($userid, 'country', $_POST['country']);
+    update_user_personal_meta($userid, 'perma_lat', $_POST['perma_lat'],'user_personal');
+    update_user_personal_meta($userid, 'perma_long', $_POST['perma_long'],'user_personal');
+    update_user_personal_meta($userid, 'address_line_1', $_POST['address_line_1'],'user_personal');
+    update_user_personal_meta($userid, 'city', $_POST['city'],'user_personal');
+    update_user_personal_meta($userid, 'district', $_POST['district'],'user_personal');
+    update_user_personal_meta($userid, 'pin_code', $_POST['pin_code'],'user_personal');
+    update_user_personal_meta($userid, 'state', $_POST['state'],'user_personal');
+    update_user_personal_meta($userid, 'country', $_POST['country'],'user_personal');
+    update_user_personal_meta($userid, 'user_twitter', $_POST['user_twitter'],'user_personal');
+    update_user_personal_meta($userid, 'user_fb_id', $_POST['user_fb_id'],'user_personal');
+    update_user_personal_meta($userid, 'linked_in', $_POST['linked_in'],'user_personal');
+    update_user_personal_meta($userid, 'google_plus', $_POST['google_plus'],'user_personal');
 
-    update_user_meta($userid, 'user_twitter', $_POST['user_twitter']);
-    update_user_meta($userid, 'user_fb_id', $_POST['user_fb_id']);
-    update_user_meta($userid, 'linked_in', $_POST['linked_in']);
-    update_user_meta($userid, 'google_plus', $_POST['google_plus']);
-
-    update_user_meta($userid, 'self_title', $_POST['self_title']);
-    update_user_meta($userid, 'self_service', $_POST['self_service']);
-    update_user_meta($userid, 'self_info', $_POST['self_info']);
-    update_user_meta($userid, 'self_address_line_1', $_POST['self_address_line_1']);
-    //update_user_meta($userid, 'self_address_line_2', $_POST['self_address_line_2']);
-    update_user_meta($userid, 'self_district', $_POST['self_district']);
-    update_user_meta($userid, 'self_pin_code', $_POST['self_pin_code']);
-    update_user_meta($userid, 'self_city', $_POST['self_city']);
-    update_user_meta($userid, 'self_state', $_POST['self_state']);
-    update_user_meta($userid, 'self_country', $_POST['self_country']);
-    update_user_meta($userid, 'service_type', $_POST['service_type']);
-    update_user_meta($userid, 'service_title', $_POST['service_title']);
-    update_user_meta($userid, 'service_post_name', $_POST['service_post_name']);
-    update_user_meta($userid, 'service_info', $_POST['service_info']);
-    update_user_meta($userid, 'service_address_line_1', $_POST['service_address_line_1']);
-    //update_user_meta($userid, 'service_address_line_2', $_POST['service_address_line_2']);
-        update_user_meta($userid, 'service_district', $_POST['service_district']);
-    update_user_meta($userid, 'service_pin_code', $_POST['service_pin_code']);
-    update_user_meta($userid, 'service_city', $_POST['service_city']);
-    update_user_meta($userid, 'service_state', $_POST['service_state']);
-    update_user_meta($userid, 'service_country', $_POST['service_country']);
-    update_user_meta($userid, 'retire_type', $_POST['retire_type']);
-    update_user_meta($userid, 'retire_title', $_POST['retire_title']);
-    update_user_meta($userid, 'retire_post_name', $_POST['retire_post_name']);
-    update_user_meta($userid, 'retire_info', $_POST['retire_info']);
-    update_user_meta($userid, 'retire_address_line_1', $_POST['retire_address_line_1']);
-    //update_user_meta($userid, 'retire_address_line_2', $_POST['retire_address_line_2']);
-            update_user_meta($userid, 'retire_district', $_POST['retire_district']);
-    update_user_meta($userid, 'retire_pin_code', $_POST['retire_pin_code']);
-    update_user_meta($userid, 'retire_city', $_POST['retire_city']);
-    update_user_meta($userid, 'retire_state', $_POST['retire_state']);
-    update_user_meta($userid, 'retire_country', $_POST['retire_country']);
-    update_user_meta($userid, 'social_type', $_POST['social_type']);
-    update_user_meta($userid, 'social_title', $_POST['social_title']);
-    update_user_meta($userid, 'social_work_as', $_POST['social_work_as']);
-    update_user_meta($userid, 'social_info', $_POST['social_info']);
-    update_user_meta($userid, 'social_address_line_1', $_POST['social_address_line_1']);
-    //update_user_meta($userid, 'social_address_line_2', $_POST['social_address_line_2']);
-                update_user_meta($userid, 'social_district', $_POST['social_district']);
-    update_user_meta($userid, 'social_pin_code', $_POST['social_pin_code']);
-    update_user_meta($userid, 'social_city', $_POST['social_city']);
-    update_user_meta($userid, 'social_state', $_POST['social_state']);
-    update_user_meta($userid, 'social_country', $_POST['social_country']);
+    update_user_personal_meta($userid, 'self_title', $_POST['self_title'],'user_self');
+    update_user_personal_meta($userid, 'self_service', $_POST['self_service'],'user_self');
+    update_user_personal_meta($userid, 'self_info', $_POST['self_info'],'user_self');
+    update_user_personal_meta($userid, 'self_address_line_1', $_POST['self_address_line_1'],'user_self');
+    update_user_personal_meta($userid, 'self_district', $_POST['self_district'],'user_self');
+    update_user_personal_meta($userid, 'self_pin_code', $_POST['self_pin_code'],'user_self');
+    update_user_personal_meta($userid, 'self_city', $_POST['self_city'],'user_self');
+    update_user_personal_meta($userid, 'self_state', $_POST['self_state'],'user_self');
+    update_user_personal_meta($userid, 'self_country', $_POST['self_country'],'user_self');
+    
+    
+    update_user_personal_meta($userid, 'service_type', $_POST['service_type'],'user_service');
+    update_user_personal_meta($userid, 'service_title', $_POST['service_title'],'user_service');
+    update_user_personal_meta($userid, 'service_post_name', $_POST['service_post_name'],'user_service');
+    update_user_personal_meta($userid, 'service_info', $_POST['service_info'],'user_service');
+    update_user_personal_meta($userid, 'service_address_line_1', $_POST['service_address_line_1'],'user_service');
+    update_user_personal_meta($userid, 'service_district', $_POST['service_district'],'user_service');
+    update_user_personal_meta($userid, 'service_pin_code', $_POST['service_pin_code'],'user_service');
+    update_user_personal_meta($userid, 'service_city', $_POST['service_city'],'user_service');
+    update_user_personal_meta($userid, 'service_state', $_POST['service_state'],'user_service');
+    update_user_personal_meta($userid, 'service_country', $_POST['service_country'],'user_service');
+    
+    
+    update_user_personal_meta($userid, 'retire_type', $_POST['retire_type'],'user_retire');
+    update_user_personal_meta($userid, 'retire_title', $_POST['retire_title'],'user_retire');
+    update_user_personal_meta($userid, 'retire_post_name', $_POST['retire_post_name'],'user_retire');
+    update_user_personal_meta($userid, 'retire_info', $_POST['retire_info'],'user_retire');
+    update_user_personal_meta($userid, 'retire_address_line_1', $_POST['retire_address_line_1'],'user_retire');
+    update_user_personal_meta($userid, 'retire_district', $_POST['retire_district'],'user_retire');
+    update_user_personal_meta($userid, 'retire_pin_code', $_POST['retire_pin_code'],'user_retire');
+    update_user_personal_meta($userid, 'retire_city', $_POST['retire_city'],'user_retire');
+    update_user_personal_meta($userid, 'retire_state', $_POST['retire_state'],'user_retire');
+    update_user_personal_meta($userid, 'retire_country', $_POST['retire_country'],'user_retire');
+    
+    
+    update_user_personal_meta($userid, 'social_type', $_POST['social_type'],'user_social');
+    update_user_personal_meta($userid, 'social_title', $_POST['social_title'],'user_social');
+    update_user_personal_meta($userid, 'social_work_as', $_POST['social_work_as'],'user_social');
+    update_user_personal_meta($userid, 'social_info', $_POST['social_info'],'user_social');
+    update_user_personal_meta($userid, 'social_address_line_1', $_POST['social_address_line_1'],'user_social');
+    update_user_personal_meta($userid, 'social_district', $_POST['social_district'],'user_social');
+    update_user_personal_meta($userid, 'social_pin_code', $_POST['social_pin_code'],'user_social');
+    update_user_personal_meta($userid, 'social_city', $_POST['social_city'],'user_social');
+    update_user_personal_meta($userid, 'social_state', $_POST['social_state'],'user_social');
+    update_user_personal_meta($userid, 'social_country', $_POST['social_country'],'user_social');
 
     // If the current user can edit Users, allow this.
     update_usermeta( $userid, 'noone_meta', $_POST['noone_meta'] );
