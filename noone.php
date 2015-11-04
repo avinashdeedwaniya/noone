@@ -191,6 +191,25 @@ function get_user_personal_meta($uid,$field,$database){
 	} 
 }
 
+function get_userAllData($uid){
+	global $wpdb;
+	$SQL = "select uprs.user_id as ID,uprs.*,uslf.*,uso.*,usrv.*, urtr.* from ".$wpdb->prefix."user_personal as uprs 
+	Left join ".$wpdb->prefix."user_self as uslf on uprs.user_id=uslf.user_id
+	Left join ".$wpdb->prefix."user_social as uso on uprs.user_id=uso.user_id
+	Left join ".$wpdb->prefix."user_service as usrv on uprs.user_id=usrv.user_id
+	Left join ".$wpdb->prefix."user_retire as urtr on uprs.user_id=urtr.user_id
+	where uprs.user_id= $uid";
+	$t_record        = $wpdb->get_results($SQL);
+    $user_records   = count($t_record);
+    if($user_records > 0){
+		  
+		  return $t_record[0];		  
+	}
+	else{
+		return '';
+	} 
+}
+
 function noone_users($user)
 {
 	if(!get_option('noone_active'))

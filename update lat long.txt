@@ -1,4 +1,5 @@
 /*
+global $wpdb;
   $aa=json_decode('[
     {
         "lat": 26,
@@ -402,21 +403,19 @@
     }
 ]',true);
  
-      $ss='select ID from wp4_users';
+      $ss='select ID from wp_users';
    $qq= $wpdb->get_results($ss);
-   str_getcsv($csv);
+    
+    str_getcsv($csv);
    $ii=0;
     foreach ($qq as  $vv) {
       $rand1= rand(63,1);
       $rand2=rand(-63,-1);
           
-        echo "delete from wp4_usermeta where meta_key='perma_lat' and user_id=".$vv->ID.";";
-       
-echo "INSERT INTO `wp4`.`wp4_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES (NULL, '".$vv->ID."', 'perma_lat', '".$aa[$ii]['lat']."');";
+        
+echo "INSERT INTO `wp_user_personal` (`user_id`, `perma_lat`, `perma_long`) VALUES ('".$vv->ID."', '".$aa[$ii]['lat']."', '".$aa[$ii]['long']."');";
          
-        echo "delete from wp4_usermeta where meta_key='perma_long' and user_id=".$vv->ID.";";
-   
-   echo "INSERT INTO `wp4`.`wp4_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES (NULL, '".$vv->ID."', 'perma_long', '".$aa[$ii]['long']."');";
+        
  $ii++;
     }
 die; */ 

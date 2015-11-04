@@ -58,10 +58,10 @@ function noone_map_searching()
     (isset($_REQUEST['search_sector']) && trim($_REQUEST['search_sector']) != '')
     )
     {
-		 $SQL .= " 	INNER JOIN ".$wpdb->prefix."user_self AS slf ON (".$wpdb->prefix."users.ID = slf.user_id)
-					INNER JOIN ".$wpdb->prefix."user_service AS ser ON (".$wpdb->prefix."users.ID = ser.user_id)
-					INNER JOIN ".$wpdb->prefix."user_retire AS ret ON (".$wpdb->prefix."users.ID = ret.user_id)
-					INNER JOIN ".$wpdb->prefix."user_social AS soc ON (".$wpdb->prefix."users.ID = soc.user_id) ";
+		 $SQL .= " 	LEFT JOIN ".$wpdb->prefix."user_self AS slf ON (".$wpdb->prefix."users.ID = slf.user_id)
+					LEFT JOIN ".$wpdb->prefix."user_service AS ser ON (".$wpdb->prefix."users.ID = ser.user_id)
+					LEFT JOIN ".$wpdb->prefix."user_retire AS ret ON (".$wpdb->prefix."users.ID = ret.user_id)
+					LEFT JOIN ".$wpdb->prefix."user_social AS soc ON (".$wpdb->prefix."users.ID = soc.user_id) ";
     }
   
     
@@ -152,7 +152,7 @@ function noone_map_searching()
 			(LOWER(soc.social_info) LIKE '%" . strtolower($_REQUEST['search_occp_type']) . "%')
         ) ";
     }
-   echo $TSQL            = $SQL . " AND
+   $TSQL            = $SQL . " AND
 (mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY '.$order_by.' ASC ";
     $t_record        = $wpdb->get_results($TSQL);
     $total_records   = count($t_record);
@@ -160,10 +160,9 @@ function noone_map_searching()
     $paged = ( get_query_var( 'page' ) ) ? absint( get_query_var( 'page' ) ) : 1;
     $paging->assign(get_permalink().'?search_name='.$_REQUEST['search_name'].'&search_city='.$_REQUEST['search_city'].'&search_state='.$_REQUEST['search_state'].'&search_sector='.$_REQUEST['search_sector'].'&search_occp_type='.$_REQUEST['search_occp_type'].'&search_occp_city='.$_REQUEST['search_occp_city'].'&search_occp_state='.$_REQUEST['search_occp_state'].'&search_btn='.$_REQUEST['search_btn'].'&dir-search='.$_REQUEST['dir-search'].'', $total_records, $record_per_page,$paged);
     $sql_limit = $paging->sql_limit();
-   $SQL .= " AND 
+    $SQL .= " AND 
 (mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY ".$order_by." ASC LIMIT " . $sql_limit; 
     $fivesdrafts = $wpdb->get_results($SQL);
-    
 ?>
 <div class="author-entry">
     <script src="<?php echo plugins_url('assets/js/jquery.validate.js', __FILE__)?>"></script> 
@@ -292,11 +291,13 @@ function noone_map_searching()
             markers: [
             <?php
         $i = 0;
+       
         foreach ($fivesdrafts as $author)
         {
 
             $i++;
-            $author_info = get_userdata($author->ID);
+            $author_info = get_userAllData($author->ID);
+        
   
             if (trim($author_info->perma_lat) != '' && trim($author_info->perma_long) != '')
             {
@@ -432,8 +433,11 @@ if ($fivesdrafts)
  <?php       $i = 0;
         foreach ($fivesdrafts as $author)
         {
+			 
             $i++;
-            $author_info = get_userdata($author->ID);
+            
+            $author_info = get_userAllData($author->ID);
+            
 ?>
             <li class="well"> <div class="panel panel-default">
                 <div class="panel-heading"><?php echo $author_info->first_name.' '.$author_info->last_name; ?></div>
@@ -451,29 +455,17 @@ if ($fivesdrafts)
 				<script type="text/javascript">
 				jQuery(function(){
 					
-					 
-	
-	
-				 jQuery("#map_but_<?php
-					echo $i;
-	?>").click(function(){  
-		
-				 
+					jQuery("#map_but_<?php echo $i;?>").click(function(){  
+					var ulat = jQuery("#user_lat").val() ;
+					var ulong = jQuery("#user_long").val() ;
 						jQuery.goMap.setMap({latitude:'<?php
 							echo $author_info->perma_lat;?>', longitude:'<?php
 							echo $author_info->perma_long;?>'
-
 						}); 
 						jQuery.goMap.setMap({zoom: 7});
-						google.maps.event.trigger(jQuery(jQuery.goMap.mapId).data('map_<?php
-					echo $i;
-	?>'), 'click'); 
-	jQuery( window ).scrollTop(0);
-	
-					
-					var ulat = jQuery("#user_lat").val() ;
-					var ulong = jQuery("#user_long").val() ;	
-					if(ulat!='' && ulong!=''){
+						google.maps.event.trigger(jQuery(jQuery.goMap.mapId).data('map_<?php echo $i;?>'), 'click'); 
+						jQuery( window ).scrollTop(0);
+					/*if(ulat!='' && ulong!=''){
 						jQuery.goMap.removeOverlay('polyline','poly_linee');
 						jQuery.goMap.createPolyline({
 							color: "#00CC00",
@@ -490,7 +482,7 @@ if ($fivesdrafts)
 									longitude: ulong
 							}]
 						});
-					}
+					}*/
 					});
 					
 					 
@@ -523,6 +515,8 @@ if ($fivesdrafts)
 				?>
             </li>
         <?php
+          
+            
         } //$fivesdrafts as $author
        ?>
         </ul> <div class="modal">
