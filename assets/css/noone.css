@@ -58,11 +58,10 @@
  
  
 #map-search-form{
-    /*background: #4e5d6c;*/
-    position: absolute;
-    top: 0;
-    right: 17px;
+    bottom: 15px;
     padding: 15px;
+    position: absolute;
+    right: 16px;
 }
 #map-search-form input, #map-search-form select{
     margin-bottom: 10px;
@@ -328,6 +327,7 @@ body.modal_wrap .modal_body_wrap{ position: absolute; top: 0; left: 0; width: 10
 }
 .panel .panel-body{
     font-size: 12px !important;
+    position: relative;
 }
 .dir-searchinput-settings{
     width: 100%;
@@ -350,6 +350,11 @@ body.modal_wrap .modal_body_wrap{ position: absolute; top: 0; left: 0; width: 10
      
     #map-search-form{
         position: relative;
+        margin-left: 0px !important;
+        left: 0px;
+        bottom: 0px;
+        padding: 0px;
+
     }
     #map-search-form input[type=submit]{
         margin-bottom: 10px;
@@ -408,8 +413,19 @@ body.modal_wrap .modal_body_wrap{ position: absolute; top: 0; left: 0; width: 10
     }
   
 }
-
-
+.search_profession, .search_around, .search_in_order{
+    display: none;
+}
+.search_personal_p, .search_profession_p, .search_around_p, .search_in_order_p{
+    cursor: pointer;
+    background: url('../images/down-arrow.png') top right no-repeat;
+    border-bottom: 1px lightblue solid;
+}
+.search_personal_p.active, .search_profession_p.active, .search_around_p.active, .search_in_order_p.active{
+    cursor: pointer;
+    background: url('../images/up-arrow.png') top right no-repeat;
+}
+.search_around{ position: relative; top: 10px; height: 34px; margin-bottom: 10px;}
 @media only screen and (max-width: 767px) {
 
 }

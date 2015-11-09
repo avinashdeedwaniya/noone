@@ -1383,6 +1383,6 @@ function itr_global_js_vars() {
     echo "\n/* ]]> */\n";
     echo "</script>\n";
 }
- 
+
 
 ?>

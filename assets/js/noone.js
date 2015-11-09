@@ -6,6 +6,12 @@ jQuery(document).ready(function() {
 	 var _window = jQuery(window).width();
 	 var _wHeight = jQuery(window).height();
 	
+	// show sections on click
+	jQuery(".search_personal_p, .search_profession_p, .search_around_p, .search_in_order_p").click(function(){
+		jQuery(".search_personal_p, .search_profession_p, .search_around_p, .search_in_order_p").removeClass("active").next("div:visible").slideToggle( "slow" );
+		jQuery(this).toggleClass( "active" ).next("div").slideToggle( "slow" );
+	});
+	
     function getLocation() {
         if (navigator.geolocation) {
             jQuery('#search_order option[value=distance]').prop('disabled', false);
@@ -123,9 +129,9 @@ jQuery(document).ready(function() {
 	function set_map_searchbar_height(){
 		var _window = jQuery(window).width();
 		var _wHeight = (jQuery(window).height());
-		var _mapSearchHeight = jQuery("#map-search-form").outerHeight(true);
+		//var _mapSearchHeight = jQuery("#map-search-form").outerHeight(true);
 		jQuery("#mapnew").css("height", (_wHeight-33));		 
-		if(_window > 767){			
+		/*if(_window > 767){			
 			
 			if(jQuery("#mapnew").height() < _mapSearchHeight){
 				jQuery("#map-search-form").css("top", '17px');
@@ -147,7 +153,7 @@ jQuery(document).ready(function() {
 			jQuery("#map-search-form").css("height", 'auto');
 			jQuery("#map-search-form").css("top", '0px');
 			jQuery("#map-search-form").css("overflow", '');
-		}
+		}*/
 	}
 	 
     setTimeout(function() {
@@ -158,7 +164,7 @@ jQuery(document).ready(function() {
     jQuery(window).resize(function() {
         setTimeout(function() {
             equalizer();
-            //set_map_searchbar_height();
+            set_map_searchbar_height();
         }, 300);
 
     });
