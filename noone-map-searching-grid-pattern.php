@@ -300,14 +300,14 @@
 							id: 'map_" . $i . "', 
 							icon: '".$icon."',
 							html: { content: '<div id=\"iw-container\">' +
-						'<div class=\"iw-title\">".$author_info->first_name." ".$author_info->last_name."</div>' +
+						'<div class=\"iw-title\">".get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true)."</div>' +
 						'<div class=\"iw-content\">' +
 						  '<div class=\"iw-subTitle\">History</div>' +
-						  '<img src=\"".get_noone_meta($author_info->ID,'gomap_marker_html')."\" alt=\"".$author_info->first_name."\" width=\"83\">' +
+						  '<img src=\"".get_noone_meta($author_info->ID,'gomap_marker_html')."\" alt=\"".get_user_meta($author->ID, 'first_name', true)."\" width=\"83\">' +
 						  '<p>".str_replace("\n","",nl2br(strip_tags(get_the_author_meta('description',$author->ID))))."</p>' +
 						  '<div class=\"iw-subTitle\">Contacts</div>' +
 						  '<p>E-mail: ".$author_info->user_email."<br/>Website: ".$author_info->user_url."</p>'+
-						  '<div class=\"iw-subTitle\"><a href=\"javascript:void(0);\" onClick=\"javascript:info_show(\'".$author_info->first_name." ".$author_info->last_name."\',".$author_info->ID.",450,800);\" class=\"btn btn-primary btn-sm\">VIEW MORE</a></div>'+
+						  '<div class=\"iw-subTitle\"><a href=\"javascript:void(0);\" onClick=\"javascript:info_show(\'".get_user_meta($author->ID, 'first_name', true)." ".get_user_meta($author->ID, 'last_name', true)."\',".$author_info->ID.",450,800);\" class=\"btn btn-primary btn-sm\">VIEW MORE</a></div>'+
 						'</div>' +
 						'<div class=\"iw-bottom-gradient\"></div>' +
 					  '</div>'}
@@ -421,17 +421,16 @@
 					$i++;
 				
 					$author_info = get_userAllData($author->ID);
-				
-				?>
+ 				?>
 					<li class="well"> 
 						<div class="panel panel-default">
-						<div class="panel-heading"><?php echo $author_info->first_name.' '.$author_info->last_name; ?></div>
+						<div class="panel-heading"><?php echo get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true); ?></div>
 						<div class="panel-body">
 					 
 						 <?php
-						   echo '<div class="user_block row"><figure class=" "><img src="' . get_noone_meta($author->ID,'gomap_marker_html') . '" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);" /></figure></div>';
+						   echo '<div class="user_block row"><figure class=" "><img src="' . get_noone_meta($author->ID,'gomap_marker_html') . '" onClick="javascript:info_show(\''.get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true).'\','.$author_info->ID.',450,800);" /></figure></div>';
 							
-						   echo' <div class="row user_block_btn"><input type="button" class="btn btn-primary btn-block" onClick="javascript:info_show(\''.$author_info->first_name.' '.$author_info->last_name.'\','.$author_info->ID.',450,800);" value="View Full Info"></div>';
+						   echo' <div class="row user_block_btn"><input type="button" class="btn btn-primary btn-block" onClick="javascript:info_show(\''.get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true).'\','.$author_info->ID.',450,800);" value="View Full Info"></div>';
 
 				if (trim($author_info->perma_lat) != '' && trim($author_info->perma_long) != '')
 				{
@@ -474,7 +473,9 @@
 				<?php			   
 				}  				   
 				echo'<div class="row icons text-center" >';
-				echo '<a href="mailto:'.$author_info->user_email.'" class="email"></a>';
+				if ( is_user_logged_in() ) {
+					echo '<a href="mailto:'.$author_info->user_email.'" class="email"></a>';
+				}
 				if($author_info->user_twitter)
 					echo'<a href="'.$author_info->user_twitter.'" class="twitter" target="_blank"></a>';
 				if($author_info->user_fb_id)

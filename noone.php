@@ -193,7 +193,8 @@ function get_user_personal_meta($uid,$field,$database){
 
 function get_userAllData($uid){
 	global $wpdb;
-	$SQL = "select uprs.user_id as ID,uprs.*,uslf.*,uso.*,usrv.*, urtr.* from ".$wpdb->prefix."user_personal as uprs 
+	$SQL = "select uprs.user_id as ID,u.*,uprs.*,uslf.*,uso.*,usrv.*, urtr.* from ".$wpdb->prefix."user_personal as uprs 
+	Left join ".$wpdb->prefix."users as u on uprs.user_id=u.ID
 	Left join ".$wpdb->prefix."user_self as uslf on uprs.user_id=uslf.user_id
 	Left join ".$wpdb->prefix."user_social as uso on uprs.user_id=uso.user_id
 	Left join ".$wpdb->prefix."user_service as usrv on uprs.user_id=usrv.user_id

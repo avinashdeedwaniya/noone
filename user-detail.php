@@ -1,7 +1,7 @@
 <?php
 global $wpdb; 
 $aID  =  $_REQUEST['user_id'];
-$author_info = get_userdata($aID);
+$author_info = get_userAllData($aID);
 
 ?>
  
@@ -92,7 +92,7 @@ $author_info = get_userdata($aID);
 
                   }
                   else{
-                    alert('<?php echo $author_info->first_name.' '.$author_info->last_name;?> will contact you asap.');
+                    alert('<?php echo get_user_meta($aID, 'first_name', true).' '.get_user_meta($aID, 'last_name', true);?> will contact you asap.');
                     jQuery("#send_message_btn").val('Send');
                     jQuery("#send_message_btn").removeAttr("disabled");
                     info_remove();
@@ -138,15 +138,15 @@ $author_info = get_userdata($aID);
         <div class="row">
          
         <?php
-        $self_title             = get_user_meta($aID, 'self_title', true);
+        $self_title             = get_user_personal_meta($aID, 'self_title', 'user_self');
         if($self_title!=''){
-          $self_service           = get_user_meta($aID, 'self_service', true);
-          $self_info              = nl2br(get_user_meta($aID, 'self_info', true));
-          $self_address_line_1    = nl2br(get_user_meta($aID, 'self_address_line_1', true));
-          $self_address_line_2    = nl2br(get_user_meta($aID, 'self_address_line_2', true));
-          $self_city              = get_user_meta($aID, 'self_city', true);
-          $self_state             = get_user_meta($aID, 'self_state', true);
-          $self_country           = get_user_meta($aID, 'self_country', true);
+          $self_service           = get_user_personal_meta($aID, 'self_service', 'user_self');
+          $self_info              = nl2br(get_user_personal_meta($aID, 'self_info', 'user_self'));
+          $self_address_line_1    = nl2br(get_user_personal_meta($aID, 'self_address_line_1', 'user_self'));
+          $self_address_line_2    = nl2br(get_user_personal_meta($aID, 'self_address_line_2', 'user_self'));
+          $self_city              = get_user_personal_meta($aID, 'self_city', 'user_self');
+          $self_state             = get_user_personal_meta($aID, 'self_state', 'user_self');
+          $self_country           = get_user_personal_meta($aID, 'self_country', 'user_self');
         ?> <div class="col-md-10">
              <div class="panel panel-primary">
               <div class="panel-heading">
@@ -163,16 +163,16 @@ $author_info = get_userdata($aID);
             </div> </div>
             <?php }
              
-          $service_title          = get_user_meta($aID, 'service_title', true);
+          $service_title          = get_user_personal_meta($aID, 'service_title', 'user_service');
         if($service_title!=''){
-          $service_type           = get_user_meta($aID, 'service_type', true);
-          $service_post_name      = get_user_meta($aID, 'service_post_name', true);
-          $service_info           = nl2br(get_user_meta($aID, 'service_info', true));
-          $service_address_line_1 = nl2br(get_user_meta($aID, 'service_address_line_1', true));
-          $service_address_line_2 = nl2br(get_user_meta($aID, 'service_address_line_2', true));
-          $service_city           = get_user_meta($aID, 'service_city', true);
-          $service_state          = get_user_meta($aID, 'service_state', true);
-          $service_country        = get_user_meta($aID, 'service_country', true);
+          $service_type           = get_user_personal_meta($aID, 'service_type', 'user_service');
+          $service_post_name      = get_user_personal_meta($aID, 'service_post_name', 'user_service');
+          $service_info           = nl2br(get_user_personal_meta($aID, 'service_info', 'user_service'));
+          $service_address_line_1 = nl2br(get_user_personal_meta($aID, 'service_address_line_1', 'user_service'));
+          $service_address_line_2 = nl2br(get_user_personal_meta($aID, 'service_address_line_2', 'user_service'));
+          $service_city           = get_user_personal_meta($aID, 'service_city', 'user_service');
+          $service_state          = get_user_personal_meta($aID, 'service_state', 'user_service');
+          $service_country        = get_user_personal_meta($aID, 'service_country', 'user_service');
         ?>
         <div class="col-md-10">
         <div class="panel panel-success">
@@ -193,16 +193,16 @@ $author_info = get_userdata($aID);
           </div>
           <?php } 
           
-           $retire_title           = get_user_meta($aID, 'retire_title', true);
+           $retire_title           = get_user_personal_meta($aID, 'retire_title', 'user_retire');
         if($retire_title!=''){
-          $retire_type            = get_user_meta($aID, 'retire_type', true);
-          $retire_post_name       = get_user_meta($aID, 'retire_post_name', true);
-          $retire_info            = nl2br(get_user_meta($aID, 'retire_info', true));
-          $retire_address_line_1  = nl2br(get_user_meta($aID, 'retire_address_line_1', true));
-          $retire_address_line_2  = nl2br(get_user_meta($aID, 'retire_address_line_2', true));
-          $retire_city            = get_user_meta($aID, 'retire_city', true);
-          $retire_state           = get_user_meta($aID, 'retire_state', true);
-          $retire_country         = get_user_meta($aID, 'retire_country', true);
+          $retire_type            = get_user_personal_meta($aID, 'retire_type', 'user_retire');
+          $retire_post_name       = get_user_personal_meta($aID, 'retire_post_name', 'user_retire');
+          $retire_info            = nl2br(get_user_personal_meta($aID, 'retire_info', 'user_retire'));
+          $retire_address_line_1  = nl2br(get_user_personal_meta($aID, 'retire_address_line_1', 'user_retire'));
+          $retire_address_line_2  = nl2br(get_user_personal_meta($aID, 'retire_address_line_2', 'user_retire'));
+          $retire_city            = get_user_personal_meta($aID, 'retire_city', 'user_retire');
+          $retire_state           = get_user_personal_meta($aID, 'retire_state', 'user_retire');
+          $retire_country         = get_user_personal_meta($aID, 'retire_country', 'user_retire');
         ?><div class="col-md-10">
         <div class="panel panel-warning">
               <div class="panel-heading">
@@ -222,16 +222,16 @@ $author_info = get_userdata($aID);
          
           <?php } 
           
-           $social_title           = get_user_meta($aID, 'social_title', true);
+           $social_title           = get_user_personal_meta($aID, 'social_title', 'user_social');
           if($social_title!=''){
-          $social_type            = get_user_meta($aID, 'social_type', true);
-          $social_work_as         = get_user_meta($aID, 'social_work_as', true);
-          $social_info            = nl2br(get_user_meta($aID, 'social_info', true));
-          $social_address_line_1  = nl2br(get_user_meta($aID, 'social_address_line_1', true));
-          $social_address_line_2  = nl2br(get_user_meta($aID, 'social_address_line_2', true));
-          $social_city            = get_user_meta($aID, 'social_city', true);
-          $social_state           = get_user_meta($aID, 'social_state', true);
-          $social_country         = get_user_meta($aID, 'social_country', true);
+          $social_type            = get_user_personal_meta($aID, 'social_type', 'user_social');
+          $social_work_as         = get_user_personal_meta($aID, 'social_work_as', 'user_social');
+          $social_info            = nl2br(get_user_personal_meta($aID, 'social_info', 'user_social'));
+          $social_address_line_1  = nl2br(get_user_personal_meta($aID, 'social_address_line_1', 'user_social'));
+          $social_address_line_2  = nl2br(get_user_personal_meta($aID, 'social_address_line_2', 'user_social'));
+          $social_city            = get_user_personal_meta($aID, 'social_city', 'user_social');
+          $social_state           = get_user_personal_meta($aID, 'social_state', 'user_social');
+          $social_country         = get_user_personal_meta($aID, 'social_country', 'user_social');
         ?><div class="col-md-10">
         <div class="panel panel-info">
           <div class="panel-heading">
@@ -313,10 +313,20 @@ $author_info = get_userdata($aID);
           </div>
           <div class="col-md-6">
                <div class="contact_address_block">   <h3 class="text-primary">Contact address:</h3> 
-                <?php  echo add_comma_br(nl2br($author_info->address_line_1))?>
-                <?php  echo add_comma_br(nl2br($author_info->address_line_2))?>
-                <?php  echo add_comma_br($author_info->city)?> 
-                <?php  echo $author_info->country?>
+                <?php  
+                $address_line_1         = get_user_personal_meta($aID, 'address_line_1', 'user_personal');
+				$city                   = get_user_personal_meta($aID, 'city', 'user_personal');
+				$district               = get_user_personal_meta($aID, 'district', 'user_personal');
+				$state                  = get_user_personal_meta($aID, 'state', 'user_personal');
+				$pin_code               = get_user_personal_meta($aID, 'pin_code', 'user_personal');
+				$country                = get_user_personal_meta($aID, 'country', 'user_personal');
+    
+				echo add_comma_br(nl2br($address_line_1));
+				echo add_comma_br($city);
+				echo add_comma_br($district);
+				echo add_comma_br($state); 
+				echo add_comma_br($pin_code);
+				echo add_comma_br($country);?>
               </div>  
             </div>   
         </div>    
@@ -325,10 +335,13 @@ $author_info = get_userdata($aID);
            
       </div>
       <?php
-      if(trim($author_info->user_twitter)!='' ||trim($author_info->user_fb_id)!='' ||trim($author_info->linked_in)!='' ||trim($author_info->google_plus)!='' ){?>
+      if(trim($author_info->user_twitter)!='' ||trim($author_info->user_fb_id)!='' ||trim($author_info->linked_in)!='' ||trim($author_info->google_plus)!='' ){
+		  
+		  ?>
+		  
   <hr>
   <div class="row"><div class="col-md-4">
-    <h4 class="text-primary">Contact <?php echo $author_info->first_name.' '.$author_info->last_name;?>:</h4>
+    <h4 class="text-primary">Contact <?php echo get_user_meta($aID, 'first_name', true).' '.get_user_meta($aID, 'last_name', true);?>:</h4>
             </div>
             <div class="col-md-8 text-left"><?php echo'<span class="icons">';
             if($author_info->user_twitter)
