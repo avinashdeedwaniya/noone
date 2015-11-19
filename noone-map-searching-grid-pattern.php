@@ -1,4 +1,5 @@
 	<?php
+	
 	function noone_map_searching()
 	{
 		global $wpdb;
@@ -428,7 +429,7 @@
 						<div class="panel-body">
 					 
 						 <?php
-						   echo '<div class="user_block row"><figure class=" "><img src="' . get_noone_meta($author->ID,'gomap_marker_html') . '" onClick="javascript:info_show(\''.get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true).'\','.$author_info->ID.',450,800);" /></figure></div>';
+						   echo '<div class="user_block row"><figure class=" "><img src="' . get_noone_meta($author->ID,'noone_user_search') . '" onClick="javascript:info_show(\''.get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true).'\','.$author_info->ID.',450,800);" width="150" /></figure></div>';
 							
 						   echo' <div class="row user_block_btn"><input type="button" class="btn btn-primary btn-block" onClick="javascript:info_show(\''.get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true).'\','.$author_info->ID.',450,800);" value="View Full Info"></div>';
 

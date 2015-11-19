@@ -173,6 +173,7 @@ add_action('init','add_noone_image_size');
 function add_noone_image_size(){
     add_image_size('gomap_marker',20,20);
     add_image_size('gomap_marker_html',100,85);
+    add_image_size('noone_user_search',150,150);
     
 }
 
