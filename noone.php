@@ -40,10 +40,12 @@ function noone_install() {
 
         $post_id = wp_insert_post($my_page);
     }
-    $charset_collate = $wpdb->get_charset_collate();
+    $wpdb->charset = 'utf8mb4';
+    $wpdb->collate = 'utf8mb4_unicode_ci';
+    $charset_collate = "DEFAULT CHARACTER SET ".$wpdb->charset." COLLATE ".$wpdb->collate;
     
-    $table_name = $wpdb->prefix . 'user_personal';
-	$sql = "CREATE TABLE $table_name (
+     $table_name = $wpdb->prefix . 'user_personal';
+	 $sql = "CREATE TABLE $table_name (
 		  `user_id` bigint(20) NOT NULL,
 		  `perma_lat` varchar(255) NOT NULL,
 		  `perma_long` varchar(255) NOT NULL,
@@ -57,7 +59,7 @@ function noone_install() {
 		  `user_fb_id` varchar(255) NOT NULL,
 		  `linked_in` varchar(255) NOT NULL,
 		  `google_plus` varchar(255) NOT NULL
-	) $charset_collate;";
+	) $charset_collate;"; 
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql );
 	
@@ -299,8 +301,8 @@ function noone_users($user)
         <table class="form-table">
             <tbody>
                         <tr><td colspan="2">
-                    <?php
-    wp_register_script('noone_google_map', 'http://maps.google.com/maps/api/js?sensor=false');
+                    <?php //AIzaSyBQmvTr43m1Hs3TEby9xsTR787dv-TL0T4
+    wp_register_script('noone_google_map', 'https://maps.googleapis.com/maps/api/js');
     wp_enqueue_script('noone_google_map');
     wp_register_script('noone_gomap', plugins_url('assets/js/jquery.gomap-1.3.3.js', __FILE__));
     wp_enqueue_script('noone_gomap');
@@ -973,11 +975,11 @@ function remove_all_theme_styles() {
     wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
     wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0'); 
     wp_enqueue_style('jquery.range.css', plugins_url('assets/css/jquery.range.css', __FILE__), null, '1.0'); 
-     wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));
+    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));
     wp_enqueue_script('noone_gomap', plugins_url('assets/js/jquery.gomap-1.3.3.js', __FILE__));
     wp_enqueue_script('noone_js', plugins_url('assets/js/noone.js', __FILE__));
-    wp_enqueue_style('noonecss', plugins_url('assets/css/noone.css', __FILE__) );    
     wp_enqueue_style('noonegridcss', plugins_url( 'assets/css/bootstrap.css', __FILE__));
+    wp_enqueue_style('noonecss', plugins_url('assets/css/noone.css', __FILE__) );
     wp_enqueue_style('mCustomScrollbarcss', plugins_url( 'assets/css/jquery.mCustomScrollbar.css', __FILE__));
     wp_enqueue_script('media-upload');
 }
@@ -990,9 +992,9 @@ function remove_all_theme_styles_no_map() {
 	wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
     wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0'); 
     wp_enqueue_script('noone_js', plugins_url('assets/js/noone.js', __FILE__));
-    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));
-    wp_enqueue_style('noonecss', plugins_url('assets/css/noone.css', __FILE__) );    
+    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));      
     wp_enqueue_style('noonegridcss', plugins_url( 'assets/css/bootstrap.css', __FILE__));
+    wp_enqueue_style('noonecss', plugins_url('assets/css/noone.css', __FILE__) );  
     wp_enqueue_style('mCustomScrollbarcss', plugins_url( 'assets/css/jquery.mCustomScrollbar.css', __FILE__));
 }
 include('noone-searching-grid-pattern.php');
@@ -1386,5 +1388,60 @@ function itr_global_js_vars() {
     echo "</script>\n";
 }
 
+/*
+ * CREATE ADMIN PAGE FOR SETTINGS
+ * 
+ * */
+ 
+ // create custom plugin settings menu
+	add_action('admin_menu', 'noone_create_menu');
+	function noone_create_menu() {
 
+		//create new top-level menu
+		add_menu_page('Noone Page Setting', 'Noone Page Setting', 'administrator', __FILE__, 'noone_settings_page');
+
+		//call register settings function
+		add_action( 'admin_init', 'register_noone_settings' );
+	}
+
+
+	function register_noone_settings() {
+		//register our settings
+		register_setting( 'my-cool-plugin-settings-group', 'noone_google_api_key' );
+		register_setting( 'my-cool-plugin-settings-group', 'noone_google_analytic_code' );
+		register_setting( 'my-cool-plugin-settings-group', 'noone_google_font' );
+	}
+	function noone_settings_page() {
+	?>
+	<div class="wrap">
+	<h2>Noone Settings</h2>
+
+	<form method="post" action="options.php">
+		<?php settings_fields( 'my-cool-plugin-settings-group' ); ?>
+		<?php do_settings_sections( 'my-cool-plugin-settings-group' ); ?>
+		<table class="form-table">
+			<tr valign="top">
+			<th scope="row">Googel Map API Key</th>
+			<td><input type="text" name="noone_google_api_key" value="<?php echo esc_attr( get_option('noone_google_api_key') ); ?>" /></td>
+			</tr>
+			 
+			<tr valign="top">
+			<th scope="row">Google Analyic Code</th>
+			<td><input type="text" name="noone_google_analytic_code" value="<?php echo esc_attr( get_option('noone_google_analytic_code') ); ?>" /></td>
+			</tr>
+			
+			<tr valign="top">
+			<th scope="row">Google Font</th>
+			<td><input type="text" name="noone_google_font" value="<?php echo esc_attr( get_option('noone_google_font') ); ?>" /></td>
+			</tr>
+		</table>
+		
+		<?php submit_button(); ?>
+
+	</form>
+	</div>
+	<?php } 
+ /*
+  * END OF SETTING PAGE CODE
+  * */
 ?>

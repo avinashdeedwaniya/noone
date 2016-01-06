@@ -395,25 +395,7 @@
 		{
 			?>
 			<div class="container">
-				<div class="row search_data" style="margin-top:20px;">
-					<div class="col-sm-12">Total recored found: <?php echo $total_records;?> </div>
-					<div class="col-sm-2">You are searching: </div>
-					<div class="col-sm-10">
-						<?php if (isset($_REQUEST['search_name']) && trim($_REQUEST['search_name']) != '')
-						{?>
-						<div class="col-sm-3"><?php echo $_REQUEST['search_name'];?> </div>
-						<?php }
-						if (isset($_REQUEST['search_city']) && trim($_REQUEST['search_city']) != '')
-							{?>
-						<div class="col-sm-3">in <?php echo $_REQUEST['search_city'];?> </div>
-						<?php }?>
-						<?php if (isset($_REQUEST['search_state']) && trim($_REQUEST['search_state']) != '')
-							{?>
-						<div class="col-sm-3">in <?php echo $_REQUEST['search_state'];?> </div>
-						<?php }?>
-					 
-					</div>
-				</div>
+				 <ol class="breadcrumb"><li><a href="<?php echo home_url();?>">Home</a></li><li class="active">Noone Search</li></ol>
 				<ul class="ul_user" > 
 	 			<?php       $i = 0;
 				foreach ($fivesdrafts as $author)
@@ -429,9 +411,9 @@
 						<div class="panel-body">
 					 
 						 <?php
-						   echo '<div class="user_block row"><figure class=" "><img src="' . get_noone_meta($author->ID,'noone_user_search') . '" onClick="javascript:info_show(\''.get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true).'\','.$author_info->ID.',450,800);" width="150" /></figure></div>';
+						   echo '<div class="user_block row"><figure class=" "><img src="' . get_noone_meta($author->ID,'noone_user_search') . '" onClick="javascript:info_show(\''.get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true).'\','.$author->ID.',450,800);" width="150" /></figure></div>';
 							
-						   echo' <div class="row user_block_btn"><input type="button" class="btn btn-primary btn-block" onClick="javascript:info_show(\''.get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true).'\','.$author_info->ID.',450,800);" value="View Full Info"></div>';
+						   echo' <div class="row user_block_btn"><input type="button" class="btn btn-primary btn-block" onClick="javascript:info_show(\''.get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true).'\','.$author->ID.',450,800);" value="View Full Info"></div>';
 
 				if (trim($author_info->perma_lat) != '' && trim($author_info->perma_long) != '')
 				{

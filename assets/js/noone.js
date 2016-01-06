@@ -9,7 +9,12 @@ jQuery(document).ready(function() {
 	// show sections on click
 	jQuery(".search_personal_p, .search_profession_p, .search_around_p, .search_in_order_p").click(function(){
 		jQuery(".search_personal_p, .search_profession_p, .search_around_p, .search_in_order_p").removeClass("active").next("div:visible").slideToggle( "slow" );
-		jQuery(this).toggleClass( "active" ).next("div").slideToggle( "slow" );
+		var $this = jQuery(this);
+		$this.toggleClass( "active" ).next("div").slideToggle( "slow" );
+		jQuery(".search_personal_p, .search_profession_p, .search_around_p, .search_in_order_p").find("i").addClass("glyphicon-circle-arrow-down").removeClass("glyphicon-circle-arrow-up");
+		if($this.hasClass("active")){
+			$this.find("i").removeClass("glyphicon-circle-arrow-down").addClass("glyphicon-circle-arrow-up");
+		};
 	});
 	
     function getLocation() {

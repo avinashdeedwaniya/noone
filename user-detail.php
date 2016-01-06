@@ -289,7 +289,7 @@ $author_info = get_userAllData($aID);
                   </div>
                    
                   <div class="form-group">
-                    <label for="textArea" class="col-lg-2 control-label">Textarea</label>
+                    <label for="textArea" class="col-lg-2 control-label">Your message</label>
                     <div class="col-lg-10">
                       <textarea  id="user_message" class="form-control" name="user_message" ></textarea>
  
