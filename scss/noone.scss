@@ -50,7 +50,7 @@ body {
   	font-style: normal;
 	font-weight: 400;
 }
-button, input, select, textarea, .searchbox-title {
+button, input,  textarea, .searchbox-title {
   font-family: $font_0, $font_1, $font_2, $font_3;
   -webkit-appearance: none !important;
 }
@@ -131,13 +131,9 @@ figure img {
   }
 }
 
-#dir-searchsubmit {
-  float: left;
-}
+ 
 
-#map-search-form .clear_search {
-  margin-left: 10px;
-}
+ 
 
 /*==============================================
                 USER SEARCH FORM
@@ -152,12 +148,7 @@ figure img {
   padding: 15px;
   position: absolute;
   right: 16px;
-  input, select {
-    margin-bottom: 10px;
-  }
-  input[type=submit] {
-    margin-bottom: 0px;
-  }
+  width:300px;  
 }
 
 .metric {
@@ -269,42 +260,20 @@ body {
     padding: 5px;
     /*width: 224px;*/
   }
-  .iphone-style {
-    background: $url_8 no-repeat scroll center top transparent;
-    height: 16px;
-    width: 16px;
-  }
+  
 }
 
 .iphone-style {
   background: $url_8 no-repeat scroll 0 0 rgba(0, 0, 0, 0);
-  border-radius: 5px;
-  cursor: pointer;
   display: block;
-  height: 28px;
-  overflow: hidden;
-  width: 87px;
+  height: 16px; 
+  width: 16px;
 }
-
-#dir-searchinput-settings-position {
-  .iphone-style.off {
+.iphone-style.off {
     background-position: center bottom;
-  }
-  .text-geo-radius {
-    input {
-      background: none repeat scroll 0 0 transparent;
-      border: medium none;
-      float: left;
-      margin: 0;
-      padding: 0;
-      width: 26px;
-    }
-    .metric {
-      clear: both;
-      line-height: 30px;
-    }
-  }
-}
+  }  
+   
+ 
 
 .hidden {
   display: none;
@@ -524,9 +493,7 @@ body.modal_wrap {
   .search_profession {
     position: relative;
   }*/
-  #dir-searchsubmit {
-   float: none;
-  }
+  
 }
 
 /*
@@ -584,9 +551,7 @@ body.modal_wrap {
     margin: 20px !important;
     width: 100%;
   }
-  #map-search-form .clear_search {
-    margin-left: 0px;
-  }
+ 
   .slider-container.theme-green {
     width: 85% !important;
   }
@@ -602,14 +567,9 @@ body.modal_wrap {
   border-bottom: 1px $color_regent_st_blue_approx solid;
  
 }
-
-
-.search_around {
-  position: relative;
-  top: 10px;
-  height: 34px;
-  margin-bottom: 10px;
-}
+ .search_profession {
+ padding-top: 10px;
+ }
 
 .show-grid {
     margin-bottom: 15px;

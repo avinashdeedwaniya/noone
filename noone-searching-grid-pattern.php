@@ -194,7 +194,7 @@
 								   <div class="row show-grid">
 									   <div class="col-xs-12">
 									   <input type="submit" class="btn btn-primary " value="Search" name="search_btn" id="dir-searchsubmit">
-									   <input type="button" class="btn btn-primary clear_search" value="Clear Search" name="clear_search_btn" id="clear_search"> 
+									   <input type="button" class="btn btn-primary clear_search" value="Clear Search" name="clear_search_btn"> 
 									   </div>
 									</div>
 								</form>

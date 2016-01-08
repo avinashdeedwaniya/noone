@@ -10,7 +10,7 @@ body {
   font-style: normal;
   font-weight: 400; }
 
-button, input, select, textarea, .searchbox-title {
+button, input, textarea, .searchbox-title {
   font-family: "Philosopher", Helvetica, Arial, sans-serif !important;
   -webkit-appearance: none !important; }
 
@@ -75,12 +75,6 @@ figure img {
     .icons a:hover {
       opacity: 1; }
 
-#dir-searchsubmit {
-  float: left; }
-
-#map-search-form .clear_search {
-  margin-left: 10px; }
-
 /*==============================================
                 USER SEARCH FORM
 ===============================================*/
@@ -91,11 +85,8 @@ figure img {
   bottom: 15px;
   padding: 15px;
   position: absolute;
-  right: 16px; }
-  #map-search-form input, #map-search-form select {
-    margin-bottom: 10px; }
-  #map-search-form input[type=submit] {
-    margin-bottom: 0px; }
+  right: 16px;
+  width: 300px; }
 
 .metric {
   color: #2b3e50; }
@@ -187,32 +178,15 @@ body {
   line-height: auto !important;
   padding: 5px;
   /*width: 224px;*/ }
-#dir-searchinput-settings-position .iphone-style {
-  background: url(../images/geolocation.png) no-repeat scroll center top transparent;
-  height: 16px;
-  width: 16px; }
 
 .iphone-style {
   background: url(../images/geolocation.png) no-repeat scroll 0 0 transparent;
-  border-radius: 5px;
-  cursor: pointer;
   display: block;
-  height: 28px;
-  overflow: hidden;
-  width: 87px; }
+  height: 16px;
+  width: 16px; }
 
-#dir-searchinput-settings-position .iphone-style.off {
+.iphone-style.off {
   background-position: center bottom; }
-#dir-searchinput-settings-position .text-geo-radius input {
-  background: none repeat scroll 0 0 transparent;
-  border: medium none;
-  float: left;
-  margin: 0;
-  padding: 0;
-  width: 26px; }
-#dir-searchinput-settings-position .text-geo-radius .metric {
-  clear: both;
-  line-height: 30px; }
 
 .hidden {
   display: none;
@@ -402,8 +376,6 @@ body.modal_wrap {
   .search_profession {
     position: relative;
   }*/ }
-  .no-map #dir-searchsubmit {
-    float: none; }
 
 /*
 *
@@ -455,9 +427,6 @@ body.modal_wrap {
     margin: 20px !important;
     width: 100%; }
 
-  #map-search-form .clear_search {
-    margin-left: 0px; }
-
   .slider-container.theme-green {
     width: 85% !important; } }
 .search_profession, .search_around, .search_in_order {
@@ -467,11 +436,8 @@ body.modal_wrap {
   cursor: pointer;
   border-bottom: 1px lightblue solid; }
 
-.search_around {
-  position: relative;
-  top: 10px;
-  height: 34px;
-  margin-bottom: 10px; }
+.search_profession {
+  padding-top: 10px; }
 
 .show-grid {
   margin-bottom: 15px; }

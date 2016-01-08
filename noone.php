@@ -970,7 +970,7 @@ function remove_all_theme_styles() {
     global $wp_styles; 
     $wp_styles->queue = array();
     wp_enqueue_script('jquery');
-    wp_enqueue_script('noone_google_map', 'http://maps.google.com/maps/api/js?sensor=false');
+    wp_enqueue_script('noone_google_map', 'https://maps.googleapis.com/maps/api/js');
     wp_enqueue_script('noone_jquery_scroll', plugins_url('assets/js/jquery.range-min.js', __FILE__));
     wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
     wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0'); 

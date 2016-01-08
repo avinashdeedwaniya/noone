@@ -165,105 +165,110 @@
 	(mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY ".$order_by." ASC LIMIT " . $sql_limit; 
 		$fivesdrafts = $wpdb->get_results($SQL);
 	?>
-	<div class="author-entry">
-		<script src="<?php echo plugins_url('assets/js/jquery.validate.js', __FILE__)?>"></script> 
-
-	<ul class="margin_padding_0" > 
-		<li class="well margin_padding_0" >
-			<div class="panel panel-default margin_padding_0" >
+		<div class="author-entry">
+   <script src="<?php echo plugins_url('assets/js/jquery.validate.js', __FILE__)?>"></script> 
+   <div class="panel panel-default" >
+		  <div class="panel-body">
+			 <div id="mapnew" style="width:100%; clear:both;" ></div>
+			 <div class="panel panel-default" id="map-search-form">
 				<div class="panel-body">
-					<div id="mapnew" style="width:100%; clear:both;" ></div> 
-					<ul class="margin_padding_0"  >
-			<li class="well sform_li margin_padding_0" style="list-style:none;" id="map-search-form">
-				<div class="panel panel-default margin_padding_0">
-					<div class="panel-body">
-						<form class="form-horizontal"  method="get" action="<?php  echo get_permalink(); ?>">
-				<input type="hidden" name="user_lat" value="<?php  echo $_REQUEST['user_lat']; ?>" id="user_lat">
-				<input type="hidden" id="user_long" value="<?php  echo $_REQUEST['user_long']; ?>" name="user_long">
-				<div id="form_fileds"><!--   class="mCustomScrollbar" -->
-					<p class="searchbox-title search_personal_p active">Search By Person</p>
-					<div class="search_personal">
-						<input type="text" name="search_name" placeholder="Full Name" id="search_name"  class="dir-searchinput form-control" value="<?php  echo $_REQUEST['search_name']; ?>" />
-						<input type="text" placeholder="City" id="search_city" class="ui-autocomplete-input form-control"   name="search_city" value="<?php	echo $_REQUEST['search_city']; ?>" /> 
-						<input type="text" class="state form-control" placeholder="State" autocomplete="off" id="search_state" name="search_state" value="<?php echo $_REQUEST['search_state']; ?>" /> 
-						<div class="skey"></div>
-					</div>
-					<div class="dir-searchinput-settings" id="dir-searchinput-settings">
-						<p class="searchbox-title text search_profession_p">Search by Profession</p>
-							<div class="search_profession">
-								<select name="search_sector" class="form-control">
-									<option value="" <?php
-										selected($_REQUEST['search_sector'], ''); ?>>-- Job Sector --</option>
-									<option value="govt" <?php
-										selected($_REQUEST['search_sector'], 'govt'); ?>>Government</option>
-									<option value="private" <?php
-										selected($_REQUEST['search_sector'], 'private'); ?>>Private</option>
-								</select>
-								<input type="text" name="search_occp_type" class="form-control" placeholder="Job Post or Info" value="<?php
-								echo $_REQUEST['search_occp_type']; ?>" />
-								<input type="text" name="search_occp_city" class="form-control" placeholder="Job City" value="<?php
-									echo $_REQUEST['search_occp_city']; ?>" /> 
-								<input type="text" name="search_occp_state" class="form-control state" placeholder="Job State" value="<?php
-								echo $_REQUEST['search_occp_state']; ?>" /> 
-								<div class="skey"></div>
+				   <form  method="get" action="<?php  echo get_permalink(); ?>">
+					  <input type="hidden" name="user_lat" value="<?php  echo $_REQUEST['user_lat']; ?>" id="user_lat">
+					  <input type="hidden" id="user_long" value="<?php  echo $_REQUEST['user_long']; ?>" name="user_long">
+					  <div id="form_fileds" class="col-xs-12">
+						 <!--   class="mCustomScrollbar" -->
+						 <div class="row show-grid">
+							<p class="search_personal_p active text-left">Search By Person <i class="glyphicon glyphicon-circle-arrow-up"></i> </p>
+							<div class="search_personal row">
+							   <div class="col-xs-12 form-group">
+								  <input type="text" name="search_name" placeholder="Full Name" id="search_name"  class="dir-searchinput form-control" value="<?php  echo $_REQUEST['search_name']; ?>" />
+							   </div>
+							   <div class="col-xs-12 form-group">
+								  <input type="text" placeholder="City" id="search_city" class="ui-autocomplete-input form-control"   name="search_city" value="<?php	echo $_REQUEST['search_city']; ?>" /> 
+							   </div>
+							   <div class="col-xs-12 form-group">
+								  <input type="text" class="state form-control" placeholder="State" autocomplete="off" id="search_state" name="search_state" value="<?php echo $_REQUEST['search_state']; ?>" /> 
+								  <div class="skey"></div>
+							   </div>
 							</div>
-					</div>
-					<div class="dir-searchinput-settings" id="dir-searchinput-settings-position">
-						<div id="dir-search-advanced">
-							<p class="searchbox-title text search_around_p">Search around me</p>
-							<div class="search_around">
-								<div class="geo-loc" >
-									<div class="search-slider-geo">
+						 </div>
+						 <div class="row show-grid">
+							<p class=" search_profession_p text-left">Search by Profession <i class="glyphicon glyphicon-circle-arrow-down"></i> </p>
+							<div class="search_profession row">
+							   <div class="col-xs-12 form-group">
+								  <select name="search_sector" class="form-control">
+									 <option value="" <?php
+										selected($_REQUEST['search_sector'], ''); ?>>-- Job Sector --</option>
+									 <option value="govt" <?php
+										selected($_REQUEST['search_sector'], 'govt'); ?>>Government</option>
+									 <option value="private" <?php
+										selected($_REQUEST['search_sector'], 'private'); ?>>Private</option>
+								  </select>
+							   </div>
+							   <div class="col-xs-12 form-group">
+								  <input type="text" name="search_occp_type" class="form-control" placeholder="Job Post or Info" value="<?php
+									 echo $_REQUEST['search_occp_type']; ?>" />
+							   </div>
+							   <div class="col-xs-12 form-group">
+								  <input type="text" name="search_occp_city" class="form-control" placeholder="Job City" value="<?php
+									 echo $_REQUEST['search_occp_city']; ?>" /> 
+							   </div>
+							   <div class="col-xs-12 form-group">
+								  <input type="text" name="search_occp_state" class="form-control state" placeholder="Job State" value="<?php
+									 echo $_REQUEST['search_occp_state']; ?>" /> 
+								  <div class="skey"></div>
+							   </div>
+							</div>
+						 </div>
+						 <div class="row show-grid">
+							<p class=" search_around_p text-left">Search around me <i class="glyphicon glyphicon-circle-arrow-down"></i> </p>
+							<div class="search_profession row">
+							   <div class="col-xs-12">
+								  <div class="geo-loc" >
+									 <div class="search-slider-geo">
 										<div class="geo-button">
-											<?php if($_REQUEST['geo']=='on'){ ?>
-											<input type="checkbox" checked="checked" id="dir-searchinput-geo" name="geo" class="hidden">
-											<div class="iphone-style" rel="dir-searchinput-geo">&nbsp;</div>
-											<?php  } else { ?>
-												<input type="checkbox"   id="dir-searchinput-geo" name="geo" class="hidden">
-											<div class="iphone-style off" rel="dir-searchinput-geo">&nbsp;</div>
-												<?php
-													} ?>
+										   <?php if($_REQUEST['geo']=='on'){ ?>
+										   <input type="checkbox" checked="checked" id="dir-searchinput-geo" name="geo" class="hidden">
+										   <div class="iphone-style" rel="dir-searchinput-geo">&nbsp;</div>
+										   <?php  } else { ?>
+										   <input type="checkbox"   id="dir-searchinput-geo" name="geo" class="hidden">
+										   <div class="iphone-style off" rel="dir-searchinput-geo">&nbsp;</div>
+										   <?php
+											  } ?>
 										</div>
 										<input type="hidden" name="geo-radius" class="slider-slider" value="<?php  echo $_REQUEST['geo-radius']; ?>" id="dir-searchinput-geo-radius" />
-									</div>
-								</div>
-							</div>	
-						</div>
-					</div>
-					<div class="dir-searchinput-settings" id="dir-searchinput-settings">
-						<div id="dir-search-advanced">
-							<p class="searchbox-title order-by-text search_in_order_p">Results in order</p>
-							<div class="search_in_order">
-								<select name="search_order" class="form-control" id="search_order">
-									<option value="display_name" <?php
+									 </div>
+								  </div>
+							   </div>
+							</div>
+						 </div>
+						 <div class="row show-grid">
+							<p class=" search_in_order_p text-left">Results in order <i class="glyphicon glyphicon-circle-arrow-down"></i> </p>
+							<div class="search_profession row">
+							   <div class="col-xs-12 form-group">
+								  <select name="search_order" class="form-control" id="search_order">
+									 <option value="display_name" <?php
 										selected($_REQUEST['search_order'], 'display_name'); ?>>Name</option>
-									<option disabled="disabled" value="distance" <?php
+									 <option disabled="disabled" value="distance" <?php
 										selected($_REQUEST['search_order'], 'distance'); ?>>Distance</option>
-								</select>
-							</div>	
-						</div>
-					</div>  
+								  </select>
+							   </div>
+							</div>
+						 </div>
+						 <div class="row show-grid">
+							<div class="col-xs-12">
+							   <input type="submit" class="btn btn-primary " value="Search" name="search_btn">
+							   <input type="button" class="btn btn-primary clear_search" value="Clear Search" name="clear_search_btn"> 
+							</div>
+						 </div>
+						 <input type="hidden" value="<?php if(isset($_REQUEST['geo-radius']) && trim($_REQUEST['geo-radius'])!='' && isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on'){ echo '1';}?>" id="check_dist_calc" />
+					  </div>
+				   </form>
 				</div>
-				<div id="dir-search-button">
-					<input type="submit" class="btn btn-primary" value="Search" name="search_btn" id="dir-searchsubmit">
-					<input type="button" class="btn btn-primary clear_search" value="Clear Search" name="clear_search_btn" id="clear_search">
-					<input type="hidden" value="<?php if(isset($_REQUEST['geo-radius']) && trim($_REQUEST['geo-radius'])!='' && isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on'){ echo '1';}?>" id="check_dist_calc" />
-				</div>
-						</form>
-					</div>
-				</div>
-			</li>
-		</ul>
-				</div>
-			</div>	
-		</li>
-	</ul>
-	<div>
-		
-		
-		
-	
-	</div>			
+			 </div>
+		  </div>
+	   </div>
+	</div>
 	<script type="text/javascript">
 		jQuery(document).ready(function(){
 			jQuery(".clear_search").click(function(){
