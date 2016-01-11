@@ -256,10 +256,10 @@
 							</div>
 						 </div>
 						 <div class="row show-grid">
-							<div class="col-xs-12">
+							 
 							   <input type="submit" class="btn btn-primary " value="Search" name="search_btn">
 							   <input type="button" class="btn btn-primary clear_search" value="Clear Search" name="clear_search_btn"> 
-							</div>
+							 
 						 </div>
 						 <input type="hidden" value="<?php if(isset($_REQUEST['geo-radius']) && trim($_REQUEST['geo-radius'])!='' && isset($_REQUEST['geo']) && trim($_REQUEST['geo']) == 'on'){ echo '1';}?>" id="check_dist_calc" />
 					  </div>

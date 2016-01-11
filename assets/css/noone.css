@@ -388,18 +388,12 @@ body.modal_wrap {
     margin-left: 0px !important;
     left: 0px;
     bottom: 0px;
-    padding: 0px; }
-    #map-search-form input[type=submit] {
-      margin-bottom: 10px; }
+    padding: 0px;
+    width: 100%;
+    margin-top: 30px; }
     #map-search-form .searchbox-title {
       color: #41403e;
       font-size: 16px !important; }
-    #map-search-form input, #map-search-form select {
-      display: block; }
-    #map-search-form input, #map-search-form select {
-      width: 100%;
-      height: 40px;
-      line-height: 100%; }
 
   /*input.clear_search {
     width: 100%;
