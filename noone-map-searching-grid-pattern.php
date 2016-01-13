@@ -1,6 +1,5 @@
-	<?php
-	
-	function noone_map_searching()
+<?php
+function noone_map_searching()
 	{
 		global $wpdb;
 		require_once('paging.class.php');

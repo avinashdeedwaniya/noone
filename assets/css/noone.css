@@ -180,13 +180,16 @@ body {
   /*width: 224px;*/ }
 
 .iphone-style {
-  background: url(../images/geolocation.png) no-repeat scroll 0 0 transparent;
+  background: url(../images/geolocation-on.png);
   display: block;
   height: 16px;
   width: 16px; }
 
 .iphone-style.off {
-  background-position: center bottom; }
+  background: url(../images/geolocation.png);
+  display: block;
+  height: 16px;
+  width: 16px; }
 
 .hidden {
   display: none;
