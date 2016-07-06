@@ -153,8 +153,7 @@ body {
   background: #fff; }
 
 #dir-searchinput-settings-position .searchbox-title {
-  color: #41403e;
-  /*margin-bottom: 24px;*/ }
+  color: #41403e; }
 
 #map-search-form .geo-button {
   display: block;
@@ -174,10 +173,8 @@ body {
   border-radius: 5px;
   border-style: none none solid;
   border-width: medium medium 2px;
-  /*height: 30px;*/
   line-height: auto !important;
-  padding: 5px;
-  /*width: 224px;*/ }
+  padding: 5px; }
 
 .iphone-style {
   background: url(../images/geolocation-on.png);
@@ -214,17 +211,6 @@ ul.ul_user {
     margin-left: 27px;
     width: 100%;
     margin-top: 30px; }
-
-/*.nav-tabs > li > a {  
-  background-color: $white
-}*/
-.error.form-control {
-  /* border-color: #a94442;
-   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);*/ }
-
-label.error {
-  /*color: #a94442;*/ }
 
 ul.nav {
   margin-bottom: 10.5px; }
@@ -299,7 +285,22 @@ body.modal_wrap {
     color: white;
     margin: 0;
     border-radius: 2px 2px 0 0;
-    width: 100%; }
+    width: 100%;
+    float: left; }
+    #iw-container .iw-title .map_popup_img {
+      padding-right: 15px;
+      width: 85px;
+      float: left; }
+      #iw-container .iw-title .map_popup_img img {
+        width: 100%; }
+    #iw-container .iw-title .map_popup_title {
+      float: left; }
+      #iw-container .iw-title .map_popup_title a {
+        font-size: 12px;
+        color: #fff;
+        text-decoration: underline;
+        float: left;
+        width: 100%; }
   #iw-container .iw-content {
     font-size: 13px;
     line-height: 18px;
@@ -334,6 +335,8 @@ body.modal_wrap {
 .slider-container {
   float: right;
   padding-right: 10px; }
+  .slider-container.theme-green {
+    width: 85% !important; }
 
 .panel .panel-body {
   font-size: 12px !important;
@@ -349,36 +352,6 @@ body.modal_wrap {
 .selected-bar {
   background-color: #57504a;
   background-image: none; }
-
-.no-map {
-  /*position: relative;
-  .search_frm{
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 300px;
-  }
-*/
-  /*
-  input.form-control, select {
-    width: 30% !important;
-    height: 37px;
-    display: inline;
-    margin-right: 20px;
-  }
-  .search_personal {
-    margin-bottom: 20px;
-  }
-  .dir-search-button {
-    margin-top: 20px;
-  }
-  .dir-searchinput-settings .form-control {
-    width: 20% !important;
-  }
-  
-  .search_profession {
-    position: relative;
-  }*/ }
 
 /*
 *
@@ -398,12 +371,6 @@ body.modal_wrap {
       color: #41403e;
       font-size: 16px !important; }
 
-  /*input.clear_search {
-    width: 100%;
-    height: 40px;
-    line-height: 100%;
-    clear: both;
-  }*/
   .nav-tabs {
     border-bottom: 0px !important; }
     .nav-tabs > li {
@@ -438,5 +405,20 @@ body.modal_wrap {
 
 .show-grid {
   margin-bottom: 15px; }
+
+.mail_response {
+  background-color: #f5f5f5;
+  border-color: #dddddd;
+  color: #41403e;
+  border: 1px solid;
+  border-top: 0px;
+  border-radius: 0 0 5px 5px;
+  margin-bottom: 10px;
+  padding: 9px;
+  position: fixed;
+  z-index: 2;
+  width: 70%;
+  left: 15%;
+  font-size: 18px; }
 
 /*# sourceMappingURL=noone.css.map */

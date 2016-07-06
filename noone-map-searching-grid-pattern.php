@@ -164,8 +164,9 @@ function noone_map_searching()
 	(mt2.meta_key = '".$wpdb->prefix."capabilities' AND CAST(mt2.meta_value AS CHAR) LIKE '%subscriber%') ".$having_qry." ORDER BY ".$order_by." ASC LIMIT " . $sql_limit; 
 		$fivesdrafts = $wpdb->get_results($SQL);
 	?>
+	<div id="mail_response"></div>
 		<div class="author-entry">
-   <script src="<?php echo plugins_url('assets/js/jquery.validate.js', __FILE__)?>"></script> 
+   <script src="<?php echo plugins_url('assets/js/lib/jquery.validate.js', __FILE__)?>"></script> 
    <div class="panel panel-default" >
 		  <div class="panel-body">
 			 <div id="mapnew" style="width:100%; clear:both;" ></div>
@@ -297,22 +298,26 @@ function noone_map_searching()
 				$author_info = get_userAllData($author->ID);
 				if (trim($author_info->perma_lat) != '' && trim($author_info->perma_long) != '')
 				{
+					$website='';
+					$history="";
 					$icon=plugins_url('assets/images/gmap_marker_blue.png',__FILE__);
-					
+					if(trim($author_info->user_url)!=''){
+						$website = 	"<p><br/>Website: ".$author_info->user_url."</p>";
+					}
+					if(trim(get_the_author_meta('description',$author->ID))!=''){
+						$history='<div class=\"iw-subTitle\">History</div><p>'.str_replace("\n","",nl2br(strip_tags(get_the_author_meta('description',$author->ID)))).'</p>';	
+					}
 					$map_arr[] = "{  
 							latitude: " . $author_info->perma_lat . ", 
 							longitude: " . $author_info->perma_long . ", 
 							id: 'map_" . $i . "', 
 							icon: '".$icon."',
 							html: { content: '<div id=\"iw-container\">' +
-						'<div class=\"iw-title\">".get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true)."</div>' +
+						'<div class=\"iw-title\"><div class=\"map_popup_img\"><img src=\"".get_noone_meta($author_info->ID,'gomap_marker_html')."\" alt=\"".get_user_meta($author->ID, 'first_name', true)."\"></div><div class=\"map_popup_title\">".get_user_meta($author->ID, 'first_name', true).' '.get_user_meta($author->ID, 'last_name', true)."<a href=\"javascript:void(0);\" onClick=\"javascript:info_show(\'".get_user_meta($author->ID, 'first_name', true)." ".get_user_meta($author->ID, 'last_name', true)."\',".$author_info->ID.",450,800);\">View profile</a></div></div>' +
 						'<div class=\"iw-content\">' +
-						  '<div class=\"iw-subTitle\">History</div>' +
-						  '<img src=\"".get_noone_meta($author_info->ID,'gomap_marker_html')."\" alt=\"".get_user_meta($author->ID, 'first_name', true)."\" width=\"83\">' +
-						  '<p>".str_replace("\n","",nl2br(strip_tags(get_the_author_meta('description',$author->ID))))."</p>' +
+						  '".$history."' +
 						  '<div class=\"iw-subTitle\">Contacts</div>' +
-						  '<p>E-mail: ".$author_info->user_email."<br/>Website: ".$author_info->user_url."</p>'+
-						  '<div class=\"iw-subTitle\"><a href=\"javascript:void(0);\" onClick=\"javascript:info_show(\'".get_user_meta($author->ID, 'first_name', true)." ".get_user_meta($author->ID, 'last_name', true)."\',".$author_info->ID.",450,800);\" class=\"btn btn-primary btn-sm\">VIEW MORE</a></div>'+
+						  '<p>E-mail: ".$author_info->user_email.$website."</p>'+
 						'</div>' +
 						'<div class=\"iw-bottom-gradient\"></div>' +
 					  '</div>'}
@@ -460,7 +465,7 @@ function noone_map_searching()
 				<?php			   
 				}  				   
 				echo'<div class="row icons text-center" >';
-				if ( is_user_logged_in() ) {
+				if ( $author_info->user_email ) {
 					echo '<a href="mailto:'.$author_info->user_email.'" class="email"></a>';
 				}
 				if($author_info->user_twitter)

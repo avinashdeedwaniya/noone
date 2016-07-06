@@ -136,7 +136,7 @@
 		$fivesdrafts = $wpdb->get_results($SQL);
 	?>
 	 <div class="container no-map">
-		<script src="<?php echo plugins_url('assets/js/jquery.validate.js', __FILE__)?>"></script> 
+		<script src="<?php echo plugins_url('assets/js/lib/jquery.validate.js', __FILE__)?>"></script> 
 		 
 					 
 						  <div class="panel panel-default search_frm">

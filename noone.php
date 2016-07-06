@@ -4,6 +4,10 @@ Plugin Name: No-One Plugin
 Description: Listing + Details
 **/
 
+if ( defined('WP_CLI') && WP_CLI ) {
+    include __DIR__ . '/class/wpcli_hooks.php';
+}
+
 register_activation_hook(__FILE__, 'noone_install');
 register_deactivation_hook(__FILE__, 'noone_deactivation');
 
@@ -302,9 +306,9 @@ function noone_users($user)
             <tbody>
                         <tr><td colspan="2">
                     <?php //AIzaSyBQmvTr43m1Hs3TEby9xsTR787dv-TL0T4
-    wp_register_script('noone_google_map', 'https://maps.googleapis.com/maps/api/js');
+    wp_register_script('noone_google_map', 'https://maps.googleapis.com/maps/api/js?key='.get_option('noone_google_api_key'));
     wp_enqueue_script('noone_google_map');
-    wp_register_script('noone_gomap', plugins_url('assets/js/jquery.gomap-1.3.3.js', __FILE__));
+    wp_register_script('noone_gomap', plugins_url('assets/js/lib/jquery.gomap-1.3.3.js', __FILE__));
     wp_enqueue_script('noone_gomap');
     wp_enqueue_script('jquery');
     if (trim($city) != '' && trim($state) != '')
@@ -505,7 +509,7 @@ function noone_users($user)
 
         <div class="icon32" id="icon-tools"><br></div><h2><u>Occupation</u></h2>
         <?php
-    wp_register_script('noone_jquery_ui', plugins_url('assets/js/jquery-ui.js', __FILE__));
+    wp_register_script('noone_jquery_ui', plugins_url('assets/js/lib/jquery-ui.js', __FILE__));
     wp_enqueue_script('noone_jquery_ui');
     wp_register_style('noone_jquery_css', plugins_url('assets/css/jquery-ui.css', __FILE__));
     wp_enqueue_style('noone_jquery_css');
@@ -970,13 +974,13 @@ function remove_all_theme_styles() {
     global $wp_styles; 
     $wp_styles->queue = array();
     wp_enqueue_script('jquery');
-    wp_enqueue_script('noone_google_map', 'https://maps.googleapis.com/maps/api/js');
-    wp_enqueue_script('noone_jquery_scroll', plugins_url('assets/js/jquery.range-min.js', __FILE__));
-    wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
-    wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0'); 
+    wp_enqueue_script('noone_google_map', 'https://maps.googleapis.com/maps/api/js?key='.get_option('noone_google_api_key'));
+    wp_enqueue_script('noone_jquery_scroll', plugins_url('assets/js/lib/jquery.range-min.js', __FILE__));
+    //wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
+    //wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0'); 
     wp_enqueue_style('jquery.range.css', plugins_url('assets/css/jquery.range.css', __FILE__), null, '1.0'); 
-    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));
-    wp_enqueue_script('noone_gomap', plugins_url('assets/js/jquery.gomap-1.3.3.js', __FILE__));
+    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/lib/jquery.mCustomScrollbar.js', __FILE__));
+    wp_enqueue_script('noone_gomap', plugins_url('assets/js/lib/jquery.gomap-1.3.3.js', __FILE__));
     wp_enqueue_script('noone_js', plugins_url('assets/js/noone.js', __FILE__));
     wp_enqueue_style('noonegridcss', plugins_url( 'assets/css/bootstrap.css', __FILE__));
     wp_enqueue_style('noonecss', plugins_url('assets/css/noone.css', __FILE__) );
@@ -988,11 +992,11 @@ function remove_all_theme_styles_no_map() {
     global $wp_styles; 
     $wp_styles->queue = array();
     wp_enqueue_script('jquery');
-    wp_enqueue_script('noone_jquery_scroll', plugins_url('assets/js/jquery-ui.js', __FILE__));
+    wp_enqueue_script('noone_jquery_scroll', plugins_url('assets/js/lib/jquery-ui.js', __FILE__));
 	wp_enqueue_script('thickbox.js', '/'.WPINC.'/js/thickbox/thickbox.js', null, '1.0');
     wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0'); 
     wp_enqueue_script('noone_js', plugins_url('assets/js/noone.js', __FILE__));
-    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/jquery.mCustomScrollbar.js', __FILE__));      
+    wp_enqueue_script('noone_mCustomScrollbar', plugins_url('assets/js/lib/jquery.mCustomScrollbar.js', __FILE__));      
     wp_enqueue_style('noonegridcss', plugins_url( 'assets/css/bootstrap.css', __FILE__));
     wp_enqueue_style('noonecss', plugins_url('assets/css/noone.css', __FILE__) );  
     wp_enqueue_style('mCustomScrollbarcss', plugins_url( 'assets/css/jquery.mCustomScrollbar.css', __FILE__));
@@ -1413,13 +1417,124 @@ function itr_global_js_vars() {
 	}
 	function noone_settings_page() {
 	?>
+	 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+	<style>
+	/*!
+ * bootstrap-vertical-tabs - v1.2.1
+ * https://dbtek.github.io/bootstrap-vertical-tabs
+ * 2014-11-07
+ * Copyright (c) 2014 İsmail Demirbilek
+ * License: MIT
+ */
+.tabs-left, .tabs-right {
+  border-bottom: none;
+  padding-top: 2px;
+}
+.tabs-left {
+  border-right: 1px solid #ddd;
+}
+.tabs-right {
+  border-left: 1px solid #ddd;
+}
+.tabs-left>li, .tabs-right>li {
+  float: none;
+  margin-bottom: 2px;
+}
+.tabs-left>li {
+  margin-right: -1px;
+}
+.tabs-right>li {
+  margin-left: -1px;
+}
+.tabs-left>li.active>a,
+.tabs-left>li.active>a:hover,
+.tabs-left>li.active>a:focus {
+  border-bottom-color: #ddd;
+  border-right-color: transparent;
+}
+
+.tabs-right>li.active>a,
+.tabs-right>li.active>a:hover,
+.tabs-right>li.active>a:focus {
+  border-bottom: 1px solid #ddd;
+  border-left-color: transparent;
+}
+.tabs-left>li>a {
+  border-radius: 4px 0 0 4px;
+  margin-right: 0;
+  display:block;
+}
+.tabs-right>li>a {
+  border-radius: 0 4px 4px 0;
+  margin-right: 0;
+}
+.sideways {
+  margin-top:50px;
+  border: none;
+  position: relative;
+}
+.sideways>li {
+  height: 20px;
+  width: 120px;
+  margin-bottom: 100px;
+}
+.sideways>li>a {
+  border-bottom: 1px solid #ddd;
+  border-right-color: transparent;
+  text-align: center;
+  border-radius: 4px 4px 0px 0px;
+}
+.sideways>li.active>a,
+.sideways>li.active>a:hover,
+.sideways>li.active>a:focus {
+  border-bottom-color: transparent;
+  border-right-color: #ddd;
+  border-left-color: #ddd;
+}
+.sideways.tabs-left {
+  left: -50px;
+}
+.sideways.tabs-right {
+  right: -50px;
+}
+.sideways.tabs-right>li {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.sideways.tabs-left>li {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+</style>
 	<div class="wrap">
 	<h2>Noone Settings</h2>
-
 	<form method="post" action="options.php">
 		<?php settings_fields( 'my-cool-plugin-settings-group' ); ?>
 		<?php do_settings_sections( 'my-cool-plugin-settings-group' ); ?>
-		<table class="form-table">
+<div class="col-xs-3"> <!-- required for floating -->
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs tabs-left sideways">
+      <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
+      <li><a href="#profile" data-toggle="tab">Profile</a></li>
+      <li><a href="#messages" data-toggle="tab">Messages</a></li>
+      <li><a href="#settings" data-toggle="tab">Settings</a></li>
+    </ul>
+</div>
+
+<div class="col-xs-9">
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div class="tab-pane active" id="home">Home Tab.</div>
+      <div class="tab-pane" id="profile">Profile Tab.</div>
+      <div class="tab-pane" id="messages">Messages Tab.</div>
+      <div class="tab-pane" id="settings">
+      <table class="form-table">
 			<tr valign="top">
 			<th scope="row">Googel Map API Key</th>
 			<td><input type="text" name="noone_google_api_key" value="<?php echo esc_attr( get_option('noone_google_api_key') ); ?>" /></td>
@@ -1435,8 +1550,15 @@ function itr_global_js_vars() {
 			<td><input type="text" name="noone_google_font" value="<?php echo esc_attr( get_option('noone_google_font') ); ?>" /></td>
 			</tr>
 		</table>
-		
+		</div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+	
+	<div class="col-xs-12 align-left">	
 		<?php submit_button(); ?>
+		</div>
 
 	</form>
 	</div>
